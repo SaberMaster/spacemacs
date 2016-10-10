@@ -15,6 +15,7 @@
      prodigy
      search-engine
      graphviz
+     plantuml
      (syntax-checking :variables syntax-checking-enable-by-default nil
                       syntax-checking-enable-tooltips nil)
      (spell-checking :variables spell-checking-enable-by-default nil)
@@ -38,6 +39,7 @@
      docker
      latex
      deft
+     php
      markdown
      org
      yaml
@@ -92,10 +94,14 @@
    dotspacemacs-startup-lists '((recents . 5)
                                 (projects . 7))
    dotspacemacs-scratch-mode 'text-mode
-   dotspacemacs-themes '(solarized-light solarized-dark)
+   dotspacemacs-themes '(
+                         solarized-dark
+                         monokai
+                         solarized-light
+                         )
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 14
+                               :size 17
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
