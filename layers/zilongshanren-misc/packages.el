@@ -40,6 +40,7 @@
         git-messenger
         gist
         hydra
+        mwe-log-commands
         wrap-region
         ranger
         golden-ratio
@@ -483,6 +484,14 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
         (kbd "RET") 'helm-ag-mode-jump-other-window
         (kbd "gr") 'helm-ag--update-save-results
         (kbd "q") 'quit-window))))
+
+
+(defun zilongshanren-misc/init-mwe-log-commands ()
+  ;; (use-package mwe-log-commands
+  ;;   :defer t
+  ;;   :init
+  ;;   )
+  )
 
 (defun zilongshanren-misc/post-init-hydra ()
   (progn
