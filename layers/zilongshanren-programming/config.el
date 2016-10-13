@@ -58,11 +58,21 @@
              (add-hook 'write-contents-hooks
                        'zilongshanren/untabify-buffer nil t)))
 
+
 (setq auto-mode-alist
       (append
        '(("\\.mak\\'" . makefile-bsdmake-mode))
        auto-mode-alist))
 
+(add-hook 'php-mode-hook '(lambda ()
+                            (auto-complete-mode t)
+                            (require 'ac-php)
+                            (setq ac-sources  '(ac-source-php ) )
+                            (yas-global-mode 1)
+
+                            (define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
+                            (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
+                            ))
 
 (defmacro zilongshanren|toggle-company-backends (backend)
   "Push or delete the backend to company-backends"
