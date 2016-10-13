@@ -24,8 +24,8 @@
     org-superstar
     org-super-agenda
     cal-china-x
+    ox-reveal
     ;; org-tree-slide
-    ;; ox-reveal
     ;; worf
     ;; org-download
     ;; plain-org-wiki
@@ -716,7 +716,11 @@ holding contextual information."
     :defer t))
 
 (defun zilongshanren-org/post-init-ox-reveal ()
-  (setq org-reveal-root "file:///Users/guanghui/.emacs.d/reveal-js"))
+  (setq org-reveal-root "file:///Users/Lyn/Code/reveal.js"))
+
+;; (defun zilongshanren-org/pre-init-ox-reveal ()
+;;   (setq org-enable-reveal-js-support 't)
+;;   )
 
 
 (defun zilongshanren-org/init-org-tree-slide ()
