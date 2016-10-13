@@ -47,6 +47,8 @@
         exec-path-from-shell
         lsp-mode
         typescript-mode
+        editorconfig
+        ac-php
         ))
 
 (defun zilongshanren-programming/post-init-typescript-mode ()
@@ -625,3 +627,5 @@
     (setq company-c-headers-path-user
           (quote
            ("/Users/guanghui/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))))
+
+(defun zilongshanren-programming/init-ac-php ())
