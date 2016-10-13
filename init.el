@@ -41,7 +41,7 @@
      deft
      php
      markdown
-     org
+     (org :variables org-enable-reveal-js-support 't)
      yaml
      react
      (python :variables
@@ -60,8 +60,7 @@
      racket
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode)
-     zilongshanren
-     )
+     zilongshanren)
    dotspacemacs-additional-packages '(sicp)
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages
@@ -95,9 +94,9 @@
                                 (projects . 7))
    dotspacemacs-scratch-mode 'text-mode
    dotspacemacs-themes '(
+                         solarized-light
                          solarized-dark
                          monokai
-                         solarized-light
                          )
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '("Source Code Pro"
