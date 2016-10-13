@@ -38,8 +38,15 @@
         git-messenger
         gist
         hydra
+        mwe-log-commands
         ))
 
+(defun zilongshanren-misc/init-mwe-log-commands ()
+  ;; (use-package mwe-log-commands
+  ;;   :defer t
+  ;;   :init
+  ;;   )
+  )
 (defun zilongshanren-misc/post-init-hydra ()
   (progn
     (defhydra hydra-hotspots (:color blue)
