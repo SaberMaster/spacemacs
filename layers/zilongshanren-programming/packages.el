@@ -44,6 +44,7 @@
         cider
         editorconfig
         ac-php
+        (doxymacs :location local)
         ))
 
 (defun zilongshanren-programming/init-editorconfig ()
