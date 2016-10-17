@@ -42,4 +42,4 @@
                                             ("8str" "\\([^\"]+?\\)\"")))
 
 
-(setq user-mail-address "guanghui8827@gmail.com")
+;; (setq user-mail-address "guanghui8827@gmail.com")
