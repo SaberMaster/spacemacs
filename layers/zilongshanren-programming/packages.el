@@ -49,6 +49,7 @@
         typescript-mode
         editorconfig
         ac-php
+        (doxymacs :location local)
         ))
 
 (defun zilongshanren-programming/post-init-typescript-mode ()
