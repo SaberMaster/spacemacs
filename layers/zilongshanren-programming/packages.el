@@ -50,6 +50,7 @@
         editorconfig
         ac-php
         (doxymacs :location local)
+        mu4e
         ))
 
 (defun zilongshanren-programming/post-init-typescript-mode ()
@@ -630,3 +631,95 @@
            ("/Users/guanghui/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))))
 
 (defun zilongshanren-programming/init-ac-php ())
+
+(defun zilongshanren-programming/post-init-mu4e ()
+  ;; Use mu4e as default mail agent
+  (setq mail-user-agent 'mu4e-user-agent)
+  ;; Mail folder set to ~/Maildir
+  (setq mu4e-maildir "~/Maildir")       ; NOTE: should not be symbolic link
+  ;; Fetch mail by offlineimap
+  (setq mu4e-get-mail-command "offlineimap")
+  ;; Fetch mail in 60 sec interval
+  (setq mu4e-update-interval 60)
+
+  ;; folder for sent messages
+  (setq mu4e-sent-folder   "/Lyn/Sent")
+  ;; unfinished messages
+  (setq mu4e-drafts-folder "/Lyn/Drafts")
+  ;; trashed messages
+  (setq mu4e-trash-folder  "/Lyn/Trash")
+  ;; saved messages
+  (setq mu4e-trash-folder  "/Lyn/Archive")
+
+  (setq mu4e-maildir-shortcuts
+        '( ("/Lyn/INBOX"               . ?i)
+           ))
+
+  (require 'mu4e-contrib)
+  (setq mu4e-html2text-command 'mu4e-shr2text)
+                                        ;
+  ;; try to emulate some of the eww key-bindings
+  (add-hook 'mu4e-view-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<tab>") 'shr-next-link)
+              (local-set-key (kbd "<backtab>") 'shr-previous-link)))
+
+  ;; show message
+  (setq mu4e-view-show-images t)
+
+  ;; (setq mu4e-sent-messages-behavior 'delete)
+
+  (require 'org-mu4e)
+  (setq org-mu4e-convert-to-html t)
+  ;; (setq mu4e-html2text-command "html2text -utf8 -width 72")
+
+  (require 'smtpmail)
+  ;; SMTP setup
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-stream-type nil
+        ;; starttls-use-gnutls t
+        )
+  ;; (setq message-send-mail-function 'mailclient-send-it)
+  ;; Personal info
+  (setq user-full-name "刘亚男 Lyn Liu")
+                                        ; FIXME: add your info here
+  (setq user-mail-address "liuyanan@oradt.com") ; FIXME: add your info here
+
+  ;; smtp setup
+  (setq smtpmail-smtp-server "mail.oradt.com")
+  (setq smtpmail-smtp-service 25)
+
+  (defalias 'org-mail 'org-mu4e-compose-org-mode)
+  ;; (setq smtpmail-smtp-user "Lyn")
+                                        ; FIXME: add your gmail addr here
+  ;; (setq smtpmail-stream-type 'starttls)
+  ;; mu4e-compose-signature-auto-include
+  ;; (setq mu4e-compose-signature "")
+
+  ;; don't keep message buffers around
+  (setq message-kill-buffer-on-exit t)
+
+  ;; show images
+  (setq mu4e-show-images t)
+
+  ;; use imagemagick, if available
+  (when (fboundp 'imagemagick-register-types)
+    (imagemagick-register-types))
+
+      ;;; message view action
+  (defun mu4e-msgv-action-view-in-browser (msg)
+    "View the body of the message in a web browser."
+    (interactive)
+    (let ((html (mu4e-msg-field (mu4e-message-at-point t) :body-html))
+          (tmpfile (format "%s/%d.html" temporary-file-directory (random))))
+      (unless html (error "No html part for this message"))
+      (with-temp-file tmpfile
+        (insert
+         ""
+         ""
+         html))
+      (browse-url (concat "file://" tmpfile))))
+
+  (add-to-list 'mu4e-view-actions
+               '("View in browser" . mu4e-msgv-action-view-in-browser) t)
+  )
