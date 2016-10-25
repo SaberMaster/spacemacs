@@ -16,6 +16,7 @@
      search-engine
      graphviz
      plantuml
+     ess
      (syntax-checking :variables syntax-checking-enable-by-default nil
                       syntax-checking-enable-tooltips nil)
      (spell-checking :variables spell-checking-enable-by-default nil)
@@ -49,15 +50,17 @@
      ;; (ruby :variables ruby-enable-enh-ruby-mode t
      ;;       ruby-version-manager 'chruby)
      ;; ruby-on-rails
-     lua
+     ;; lua
      html
      javascript
      (typescript :variables
                  typescript-fmt-on-save nil
                  typescript-fmt-tool 'typescript-formatter)
      emacs-lisp
-     (clojure :variables clojure-enable-fancify-symbols t)
+     ;; (clojure :variables clojure-enable-fancify-symbols t)
      racket
+     (mu4e :variables
+           mu4e-installation-path "/usr/local/Cellar/mu/0.9.16/share/emacs/site-lisp/mu/mu4e")
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode)
      zilongshanren)
