@@ -440,25 +440,33 @@ object (e.g., within a comment).  In these case, you need to use
 
       ;; (add-hook 'org-after-todo-state-change-hook 'org-subtask-reset)
 
-      (setq org-plantuml-jar-path
-            (expand-file-name "~/.spacemacs.d/plantuml.jar"))
+      ;;(setq puml-plantuml-jar-path
+      ;;      (expand-file-name "~/.emacs.d/scripts/plantuml/plantuml.jar")
+
+      ;; (setq org-plantuml-jar-path (expand-file-name "~/.emacs.d.his/scripts/plantuml/plantuml.jar"))
+      ;; (setq org-plantuml-jar-path
+      ;;       (expand-file-name "~/.spacemacs.d/plantuml.jar"))
       (setq org-ditaa-jar-path "~/.spacemacs.d/ditaa.jar")
 
       (org-babel-do-load-languages
        'org-babel-load-languages
-       '((perl . t)
-         (ruby . t)
+       '((R . t)
+         (sh . t)
          (shell . t)
          (dot . t)
          (typescript . t)
          (js . t)
-         (latex .t)
+         (latex . t)
          (python . t)
+         (sql . t)
          (emacs-lisp . t)
-         (plantuml . t)
          (C . t)
-         (ditaa . t)))
-
+         (ditaa . t)
+         ;; (plantuml . t)
+         ;; (perl . t)
+         ;; (ruby . t)
+         )
+       )
 
       (require 'ox-md nil t)
 
@@ -716,7 +724,9 @@ holding contextual information."
     :defer t))
 
 (defun zilongshanren-org/post-init-ox-reveal ()
-  (setq org-reveal-root "file:///Users/Lyn/Code/reveal.js"))
+  (setq org-reveal-root "file:///Users/Lyn/Code/reveal.js")
+  (load-library "ox-reveal")
+  )
 
 ;; (defun zilongshanren-org/pre-init-ox-reveal ()
 ;;   (setq org-enable-reveal-js-support 't)
