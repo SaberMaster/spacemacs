@@ -258,3 +258,141 @@ comment box."
       (setq-local company-backends (remove 'company-lsp company-backends))
       (setq-local company-backends '((company-dabbrev-code :with company-keywords company-etags)
                                      company-files company-dabbrev)))))
+(defun file-string (file)
+  "Read the contents of a file and return as a string."
+  (with-current-buffer (find-file-noselect file)
+    (buffer-string)))
+
+(defun mu4e-toggle-org-mode ()
+  (interactive)
+  (cond
+   ((eq major-mode 'mu4e-view-mode) (mu4e-org-mode))
+   ((eq major-mode 'mu4e-org-mode) (mu4e-view-mode))
+   ((eq major-mode 'mu4e-compose-mode) (org-mu4e-compose-org-mode))
+   ((eq major-mode 'org-mu4e-compose-org-mode) (mu4e-compose-mode))))
+
+
+(with-eval-after-load 'mu4e-view
+  (spacemacs/set-leader-keys-for-major-mode 'mu4e-view-mode
+    "to" 'mu4e-toggle-org-mode))
+
+
+(with-eval-after-load 'mu4e-utils
+  (spacemacs/set-leader-keys-for-major-mode 'mu4e-org-mode
+    "to" 'mu4e-toggle-org-mode))
+
+(with-eval-after-load 'mu4e-compose
+  (spacemacs/set-leader-keys-for-major-mode 'mu4e-compose-mode "to" 'mu4e-toggle-org-mode))
+
+
+(with-eval-after-load 'org-mu4e
+  (setq org-mu4e-convert-to-html t)
+  (spacemacs/set-leader-keys-for-major-mode 'org-mu4e-compose-org-mode "to" 'mu4e-toggle-org-mode)
+  ;; current org-mu4e attachment has some error, delay fix
+  (defun org~mu4e-mime-replace-images (str current-file)
+    "Replace images in html files with cid links."
+    (let (html-images)
+      (cons
+       (replace-regexp-in-string ;; replace images in html
+        "src=\"\\([^\"]+\\)\""
+        (lambda (text)
+          (format
+           "src=\"cid:%s\""
+           (let* ((url (and (string-match "src=\"\\(file://\\)?\\([^\"]+\\)\"" text)
+                            (match-string 2 text)))
+                  (path (expand-file-name
+                         url (file-name-directory current-file)))
+                  (email-dir (concat temporary-file-directory "email_tmp/"))
+                  (tmp-path (if (file-name-absolute-p url)
+                                (concat email-dir
+                                        (file-name-nondirectory url))
+                              (expand-file-name
+                               url (concat (file-name-directory current-file) "email_tmp/"))
+                                ))
+                  (ext (file-name-extension path))
+                  (id (replace-regexp-in-string "[\/\\\\]" "_" path))
+                  (tmp-id (replace-regexp-in-string "[\/\\\\]" "_" tmp-path)))
+             ;; (message (concat "url:" url))
+             ;; (message (and (string-match "src=\"\\(file://\\)?\\([^\"]+\\)\"" text) (match-string 2 text)))
+             ;; (message (concat "path:" path))
+             ;; (message (concat "url:" url))
+             ;; (message (concat "path:" path))
+             ;; (message (concat "tmp-path:" tmp-path))
+             ;; (message (concat "tmp-id:" tmp-id))
+             (if (not (file-directory-p email-dir))
+                 (mkdir email-dir)
+                 )
+             (if (not (file-directory-p (file-name-directory tmp-path)))
+                 (mkdir (file-name-directory tmp-path))
+               )
+             (if (file-exists-p  url)
+                 (copy-file url tmp-path 'replace)
+               )
+             (if (file-exists-p  path)
+                 (copy-file path tmp-path 'replace)
+               )
+             (add-to-list 'html-images
+                          (org~mu4e-mime-file
+                           (concat "image/" ext) tmp-path tmp-id))
+             tmp-id)))
+        str)
+       html-images)))
+
+  (defun org~mu4e-mime-convert-to-html ()
+    "Convert the current body to html."
+    (unless (fboundp 'org-export-string-as)
+      (mu4e-error "require function 'org-export-string-as not found."))
+    ;; (setq temporary-file-directory "~/")
+    (let* ((begin
+            (save-excursion
+              (goto-char (point-min))
+              (search-forward mail-header-separator)))
+           (end (point-max))
+           (raw-body (buffer-substring begin end))
+
+           (tmp-file (make-temp-name (expand-file-name "mail"
+                                                       temporary-file-directory)))
+           ;; (tmp-file (make-temp-name "~/"))
+           (org-export-skip-text-before-1st-heading nil)
+           (org-export-htmlize-output-type 'inline-css)
+           (org-export-with-toc nil)
+           (org-export-with-latex 'imagemagick)
+           ;; (org-export-preserve-breaks t)
+           (org-export-preserve-breaks nil)
+
+           ;; (org-export-with-LaTeX-fragments
+           ;;  (if (executable-find "dvipng") 'dvipng
+           ;;    (mu4e-message "Cannot find dvipng, ignore inline LaTeX") nil))
+
+           (org-export-with-LaTeX-fragments
+            (if (executable-find "imagemagick") 'imagemagick
+              (mu4e-message "Cannot find dvipng, ignore inline LaTeX") nil))
+           (html-and-images
+            (org~mu4e-mime-replace-images
+             (concat (org-export-string-as raw-body 'html 't) (file-string "~/emailsign/emailsign.html"))
+             ;; (org-export-string-as raw-body 'html 't)
+             ;; ""
+             tmp-file
+             ))
+           (html-images (cdr html-and-images))
+           (html (car html-and-images)))
+      (delete-region begin end)
+
+        (goto-char begin)
+        (newline)
+        (insert (org~mu4e-mime-multipart
+                 raw-body html (mapconcat 'identity html-images "\n"))))))
+
+(defun zilongshanren/mu4e-org-compose ()
+  "Switch to/from mu4e-compose-mode and org-mode"
+   (interactive)
+   (let ((p (point)))
+     (goto-char (point-min))
+     (let ((case-fold-search t))
+       (when (not (search-forward "#+OPTIONS: tex:imagemagick" nil t))
+         (goto-char (point-max))
+         (insert "\n#+OPTIONS: tex:imagemagick\n#+OPTIONS: toc:0\n")))
+     (goto-char p))
+   (if (eq 'mu4e-compose-mode (buffer-local-value 'major-mode (current-buffer)))
+       (org~mu4e-mime-switch-headers-or-body)
+     (mu4e-compose-mode)))
