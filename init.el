@@ -46,6 +46,7 @@ This function should only modify configuration layer settings."
      (haskell :variables haskell-enable-hindent t
               haskell-completion-backend 'intero)
      plantuml
+     ess
      (syntax-checking :variables syntax-checking-enable-by-default nil
                       syntax-checking-enable-tooltips nil)
      (spell-checking :variables spell-checking-enable-by-default nil)
@@ -88,7 +89,7 @@ This function should only modify configuration layer settings."
              python-lsp-git-root "~/Github/python-language-server")
      ;; (ruby :variables ruby-version-manager 'chruby)
      ;; ruby-on-rails
-     lua
+     ;; lua
      html
      (javascript :variables javascript-backend 'lsp)
      (typescript :variables
@@ -96,8 +97,10 @@ This function should only modify configuration layer settings."
                  typescript-fmt-tool 'typescript-formatter
                 typescript-backend 'lsp)
      emacs-lisp
-     (clojure :variables clojure-enable-fancify-symbols t)
+     ;; (clojure :variables clojure-enable-fancify-symbols t)
      racket
+     (mu4e :variables
+           mu4e-installation-path "/usr/local/Cellar/mu/0.9.16/share/emacs/site-lisp/mu/mu4e")
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode
             c-c++-backend 'lsp-ccls
