@@ -340,8 +340,11 @@ comment box."
            (org-export-htmlize-output-type 'inline-css)
            (org-export-with-toc nil)
            (org-export-with-latex 'imagemagick)
+           ;; 空行是否换行
            ;; (org-export-preserve-breaks t)
            (org-export-preserve-breaks nil)
+           ;; 禁用下划线转义
+           (org-export-with-sub-superscripts nil)
 
            ;; (org-export-with-LaTeX-fragments
            ;;  (if (executable-find "dvipng") 'dvipng
