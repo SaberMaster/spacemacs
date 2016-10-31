@@ -620,11 +620,18 @@
   (setq smtpmail-smtp-service 25)
 
   (defalias 'org-mail 'org-mu4e-compose-org-mode)
+  ;; auto open 'org-mail
+  ;; (add-hook 'm-mode-hook (lambda () (lispy-mode 1)))
+  (add-hook 'mu4e-compose-mode-hook (lambda ()
+                                      (org-mail)
+                                      ;; (zilongshanren/mu4e-org-compose)
+                                      ))
   ;; (setq smtpmail-smtp-user "Lyn")
                                         ; FIXME: add your gmail addr here
   ;; (setq smtpmail-stream-type 'starttls)
   ;; mu4e-compose-signature-auto-include
   ;; (setq mu4e-compose-signature "")
+  ;; (setq mu4e-compose-signature (file-string "~/emailsign/emailsign.html"))
 
   ;; don't keep message buffers around
   (setq message-kill-buffer-on-exit t)
