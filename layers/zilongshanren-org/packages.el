@@ -252,9 +252,9 @@
       ;; (add-hook 'org-after-todo-state-change-hook 'org-subtask-reset)
 
       ;;(setq puml-plantuml-jar-path
-      ;;      (expand-file-name "~/.emacs.d/scripts/plantuml/plantuml.jar")
+      ;;     (expand-file-name "~/.emacs.d/scripts/plantuml/plantuml.jar")
 
-      ;; (setq org-plantuml-jar-path (expand-file-name "~/.emacs.d.his/scripts/plantuml/plantuml.jar"))
+      (setq org-plantuml-jar-path "~/.emacs.d.his/scripts/plantuml/plantuml.jar")
       ;; (setq org-plantuml-jar-path
       ;;       (expand-file-name "~/.spacemacs.d/plantuml.jar"))
       (setq org-ditaa-jar-path "~/.spacemacs.d/ditaa.jar")
@@ -273,7 +273,7 @@
          (emacs-lisp . t)
          (C . t)
          (ditaa . t)
-         ;; (plantuml . t)
+         (plantuml . t)
          ;; (perl . t)
          ;; (ruby . t)
          )
@@ -513,8 +513,11 @@ holding contextual information."
 
 (defun zilongshanren-org/post-init-ox-reveal ()
   (setq org-reveal-root "file:///Users/Lyn/Code/reveal.js")
-  (load-library "ox-reveal")
+  (with-eval-after-load 'org (progn
+                               (load-library "ox-reveal")
+                                    ))
   )
+
 
 ;; (defun zilongshanren-org/pre-init-ox-reveal ()
 ;;   (setq org-enable-reveal-js-support 't)
