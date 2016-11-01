@@ -610,8 +610,10 @@
   (setq mu4e-trash-folder  "/Lyn/Archive")
 
   (setq mu4e-maildir-shortcuts
-        '( ("/Lyn/INBOX"               . ?i)
-           ))
+        '(
+          ("/Lyn/INBOX"               . ?i)
+          ("/Lyn/SENT"               . ?s)
+          ))
 
   (require 'mu4e-contrib)
   (setq mu4e-html2text-command 'mu4e-shr2text)
