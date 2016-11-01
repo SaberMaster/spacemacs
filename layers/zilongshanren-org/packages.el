@@ -440,13 +440,11 @@ object (e.g., within a comment).  In these case, you need to use
 
       ;; (add-hook 'org-after-todo-state-change-hook 'org-subtask-reset)
 
-      ;;(setq puml-plantuml-jar-path
-      ;;     (expand-file-name "~/.emacs.d/scripts/plantuml/plantuml.jar")
+      (setq plantuml-jar-path (expand-file-name "~/.emacs.d.his/scripts/plantuml/plantuml.jar"))
 
-      (setq org-plantuml-jar-path "~/.emacs.d.his/scripts/plantuml/plantuml.jar")
-      ;; (setq org-plantuml-jar-path
-      ;;       (expand-file-name "~/.spacemacs.d/plantuml.jar"))
-      (setq org-ditaa-jar-path "~/.spacemacs.d/ditaa.jar")
+      (setq org-plantuml-jar-path (expand-file-name "~/.emacs.d.his/scripts/plantuml/plantuml.jar"))
+
+      (setq org-ditaa-jar-path (expand-file-name "~/.spacemacs.d/ditaa.jar"))
 
       (org-babel-do-load-languages
        'org-babel-load-languages
