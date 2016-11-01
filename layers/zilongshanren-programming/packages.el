@@ -703,8 +703,7 @@
         )
   ;; (setq message-send-mail-function 'mailclient-send-it)
   ;; Personal info
-  (setq user-full-name "刘亚男 Lyn Liu")
-                                        ; FIXME: add your info here
+  (setq user-full-name "刘亚男 Lyn Liu") ; FIXME: add your info here
   (setq user-mail-address "liuyanan@oradt.com") ; FIXME: add your info here
 
   ;; smtp setup
@@ -714,10 +713,12 @@
   (defalias 'org-mail 'org-mu4e-compose-org-mode)
   ;; auto open 'org-mail
   ;; (add-hook 'm-mode-hook (lambda () (lispy-mode 1)))
+
   (add-hook 'mu4e-compose-mode-hook (lambda ()
                                       (org-mail)
                                       ;; (zilongshanren/mu4e-org-compose)
                                       ))
+
   ;; (setq smtpmail-smtp-user "Lyn")
                                         ; FIXME: add your gmail addr here
   ;; (setq smtpmail-stream-type 'starttls)
