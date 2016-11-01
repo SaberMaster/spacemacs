@@ -153,7 +153,7 @@ Single Capitals as you type."
           (make-directory dir t))))))
 
 (add-hook 'minibuffer-inactive-mode-hook
-          '(lambda() (set (make-local-variable 'semantic-mode) nil)))
+          #'(lambda() (set (make-local-variable 'semantic-mode) nil)))
 
 ;; http://trey-jackson.blogspot.com/2010/04/emacs-tip-36-abort-minibuffer-when.html
 (defun zilongshanren/stop-using-minibuffer ()
@@ -165,10 +165,10 @@ Single Capitals as you type."
 
 (setq tags-add-tables nil)
 
-;; (electric-pair-mode t)
+(electric-pair-mode t)
 ;; https://www.reddit.com/r/emacs/comments/4xhxfw/how_to_tune_the_behavior_of_eletricpairmode/
-;; (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
-;; (show-paren-mode t)
+(setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+(show-paren-mode t)
 
 ;; http://oremacs.com/2015/01/17/setting-up-ediff/
 (defmacro csetq (variable value)

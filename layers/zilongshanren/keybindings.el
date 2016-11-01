@@ -92,6 +92,7 @@
   "+" 'evil-numbers/inc-at-pt
   "-" 'evil-numbers/dec-at-pt
   "\\" 'evil-repeat-find-char-reverse
+  (kbd "DEL") 'evil-repeat-find-char-reverse
   "[s" (lambda (n) (interactive "p") (dotimes (c n nil) (insert " ")))
   "]s" (lambda (n) (interactive "p")
          (forward-char) (dotimes (c n nil) (insert " ")) (backward-char (1+ n))))
@@ -107,9 +108,8 @@
 (spacemacs/declare-prefix "ot" "Toggle")
 
 
-(if (configuration-layer/layer-usedp 'helm)
-    (progn (global-set-key (kbd "<f1>") 'zilongshanren/helm-hotspots)
-           (spacemacs/set-leader-keys "oo" 'zilongshanren/helm-hotspots)))
+(global-set-key (kbd "<f1>") 'zilongshanren/helm-hotspots)
+(spacemacs/set-leader-keys "oo" 'zilongshanren/helm-hotspots)
 
 (spacemacs/set-leader-keys "oc" 'my-auto-update-tags-when-save)
 (spacemacs/set-leader-keys "op" 'zilongshanren/org-save-and-export)
@@ -128,18 +128,16 @@
 (spacemacs/set-leader-keys "ox" 'org-open-at-point)
 (spacemacs/set-leader-keys "oac" 'zilongshanren/browser-refresh--chrome-applescript)
 
-;; helm specific keybindings
-(if (configuration-layer/layer-usedp 'helm)
-    (progn
-      (spacemacs/set-leader-keys "rh" 'helm-resume)
-      (spacemacs/set-leader-keys "sj" 'counsel-imenu)))
+(spacemacs/set-leader-keys "rh" 'helm-resume)
+(spacemacs/set-leader-keys "sj" 'counsel-imenu)
 
 ;; ivy specific keybindings
 (if (configuration-layer/layer-usedp 'ivy)
     (progn
       (spacemacs/set-leader-keys "ff" 'counsel-find-file)
       (spacemacs/set-leader-keys "fL" 'counsel-locate)
-      (spacemacs/set-leader-keys "hi" 'counsel-info-lookup-symbol)))
+      (spacemacs/set-leader-keys "hi" 'counsel-info-lookup-symbol)
+      (spacemacs/set-leader-keys "pb" 'projectile-switch-to-buffer)))
 
 (spacemacs/set-leader-keys "en" 'flycheck-next-error)
 (spacemacs/set-leader-keys "ep" 'flycheck-previous-error)
@@ -148,7 +146,7 @@
 (spacemacs/set-leader-keys "gL" 'magit-log-buffer-file)
 (spacemacs/set-leader-keys "og" 'my-git-timemachine)
 
-(spacemacs/set-leader-keys "sj" 'helm-imenu)
+(spacemacs/set-leader-keys "sj" 'zilongshanren/counsel-imenu)
 ;; deal with BOM
 (spacemacs/set-leader-keys "fl" 'find-file-literally-at-point)
 (spacemacs/set-leader-keys "ri" 'ivy-resume)
@@ -157,6 +155,7 @@
 (spacemacs/set-leader-keys "oll" 'zilongshanren/load-my-layout)
 (spacemacs/set-leader-keys "ols" 'zilongshanren/save-my-layout)
 (spacemacs/set-leader-keys "ob" 'popwin:display-last-buffer)
+(spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
 
 (bind-key* "s-p" 'find-file-in-project)
 (spacemacs/set-leader-keys "os" 'zilongshanren/search-in-fireball)
@@ -179,3 +178,5 @@
   (global-set-key (kbd "s-n") 'make-frame)
   (global-set-key (kbd "s-z") 'undo-tree-undo)
   (global-set-key (kbd "s-Z") 'undo-tree-redo))
+
+(spacemacs/set-leader-keys "fel" 'helm-locate-library)
