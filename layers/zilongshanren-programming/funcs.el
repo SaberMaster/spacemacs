@@ -400,7 +400,7 @@ version 2015-08-21"
      (goto-char (point-min))
      (let ((case-fold-search t))
        (when (not (search-forward "#+OPTIONS: tex:imagemagick" nil t))
-         (goto-char (point-max))
+         (goto-char (point-min))
          (insert "\n#+OPTIONS: tex:imagemagick\n#+OPTIONS: toc:0\n")))
      (goto-char p))
    (if (eq 'mu4e-compose-mode (buffer-local-value 'major-mode (current-buffer)))
