@@ -60,8 +60,8 @@
      emacs-lisp
      ;; (clojure :variables clojure-enable-fancify-symbols t)
      racket
-     (mu4e :variables
-           mu4e-installation-path "/usr/local/Cellar/mu/0.9.16/share/emacs/site-lisp/mu/mu4e")
+     ;; (mu4e :variables
+     ;;       mu4e-installation-path "/usr/local/Cellar/mu/0.9.16/share/emacs/site-lisp/mu/mu4e")
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode)
      zilongshanren
