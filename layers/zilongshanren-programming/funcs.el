@@ -362,7 +362,6 @@ comment box."
            (org-export-preserve-breaks nil)
            ;; 禁用下划线转义
            (org-export-with-sub-superscripts nil)
-
            ;; (org-export-with-LaTeX-fragments
            ;;  (if (executable-find "dvipng") 'dvipng
            ;;    (mu4e-message "Cannot find dvipng, ignore inline LaTeX") nil))
@@ -380,11 +379,11 @@ comment box."
            (html-images (cdr html-and-images))
            (html (car html-and-images)))
       (delete-region begin end)
-
+      (save-excursion
         (goto-char begin)
         (newline)
         (insert (org~mu4e-mime-multipart
-                 raw-body html (mapconcat 'identity html-images "\n"))))))
+                 raw-body html (mapconcat 'identity html-images "\n")))))))
 
 (defun zilongshanren/mu4e-org-compose ()
   "Switch to/from mu4e-compose-mode and org-mode"
