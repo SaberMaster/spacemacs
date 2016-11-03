@@ -2,3 +2,6 @@
 /layers/zilongshanren-misc/.DS_Store
 /.spacemacs.env
 *.elc
+snippets/
+!/snippets/README.md
+TAGS
