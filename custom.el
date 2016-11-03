@@ -5,7 +5,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ahs-case-fold-search nil)
+ '(ahs-case-fold-search nil t)
  '(command-log-mode-window-size 50)
  '(company-dabbrev-minimum-length 3)
  '(company-dabbrev-other-buffers nil)
@@ -51,6 +51,7 @@
      (typescript-backend . lsp)
      (javascript-backend . lsp)
      (eval setenv "PYTHONPATH" "/Users/guanghui/cocos2d-x/tools/cocos2d-console/plugins:/Users/guanghui/cocos2d-x/tools/cocos2d-console/bin")))
+ '(send-mail-function (quote mailclient-send-it))
  '(sp-show-pair-from-inside t)
  '(tags-revert-without-query t)
  '(vc-follow-symlinks t)
