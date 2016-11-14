@@ -497,6 +497,9 @@ object (e.g., within a comment).  In these case, you need to use
             '(("t" "Todo" entry (file+headline org-agenda-file-gtd "Workspace")
                "* TODO [#B] %?\n  %i\n %U"
                :empty-lines 1)
+              ("h" "Todo home" entry (file+headline org-agenda-file-gtd "Home")
+               "* TODO [#B] %?\n  %i\n"
+               :empty-lines 1)
               ("n" "notes" entry (file+headline org-agenda-file-note "Quick notes")
                "* %?\n  %i\n %U"
                :empty-lines 1)
