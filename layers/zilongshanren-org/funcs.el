@@ -237,3 +237,40 @@
   (interactive)
   (org-octopress-setup-publish-project)
   (org-publish-project "octopress" t))
+
+(defun zilongshanren/capture-screenshot-simple (basename)
+  "Take a screenshot into a time stamped unique-named file in the
+  same directory as the org-buffer/markdown-buffer and insert a link to this file."
+  (interactive "sScreenshot name: ")
+  (if (equal basename "")
+      (setq basename (format-time-string "%Y%m%d_%H%M%S")))
+  (setq image-floder-name
+        "_imgs")
+  (setq directory-path
+        (concat (file-name-directory (buffer-file-name))
+                image-floder-name
+                "/"
+                ))
+  (unless (file-directory-p directory-path)
+    (make-directory directory-path))
+  (setq fullpath
+        (concat directory-path
+                (file-name-base (buffer-file-name))
+                "_"
+                basename))
+  (setq relativepath
+        (concat "./"
+                image-floder-name
+                "/"
+                (file-name-base (buffer-file-name))
+                "_"
+                basename
+                ".png"))
+  (setq final-image-full-path (concat fullpath ".png"))
+  (call-process "screencapture" nil nil nil "-s" final-image-full-path)
+  (if (executable-find "convert")
+      (progn
+        (setq resize-command-str (format "convert %s -resize 800x600 %s" final-image-full-path final-image-full-path))
+        (shell-command-to-string resize-command-str)))
+  (zilongshanren//insert-org-or-md-img-link "" relativepath)
+  (insert "\n"))
