@@ -246,26 +246,51 @@
       (setq basename (format-time-string "%Y%m%d_%H%M%S")))
   (setq image-floder-name
         "_imgs")
-  (setq directory-path
-        (concat (file-name-directory (buffer-file-name))
-                image-floder-name
-                "/"
-                ))
+  (if (my-project-name-contains-substring "org-notes")
+      (progn
+        (setq directory-path
+              (concat (file-name-directory (buffer-file-name))
+                      "../source/"
+                      image-floder-name
+                      "/"
+                      (file-name-base (buffer-file-name))
+                      "/"
+                      ))
+        (setq relativepath
+              (concat "../source/"
+                      image-floder-name
+                      "/"
+                      (file-name-base (buffer-file-name))
+                      "/"
+                      (file-name-base (buffer-file-name))
+                      "_"
+                      basename
+                      ".png"))
+        )
+    (progn
+      (setq directory-path
+            (concat (file-name-directory (buffer-file-name))
+                    image-floder-name
+                    "/"
+                    ))
+      (setq relativepath
+            (concat "./"
+                    image-floder-name
+                    "/"
+                    (file-name-base (buffer-file-name))
+                    "_"
+                    basename
+                    ".png"))
+      )
+    )
+
   (unless (file-directory-p directory-path)
-    (make-directory directory-path))
+    (make-directory directory-path 't))
   (setq fullpath
         (concat directory-path
                 (file-name-base (buffer-file-name))
                 "_"
                 basename))
-  (setq relativepath
-        (concat "./"
-                image-floder-name
-                "/"
-                (file-name-base (buffer-file-name))
-                "_"
-                basename
-                ".png"))
   (setq final-image-full-path (concat fullpath ".png"))
   (call-process "screencapture" nil nil nil "-s" final-image-full-path)
   (if (executable-find "convert")
