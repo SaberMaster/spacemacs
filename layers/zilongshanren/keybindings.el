@@ -180,3 +180,4 @@
   (global-set-key (kbd "s-Z") 'undo-tree-redo))
 
 (spacemacs/set-leader-keys "fel" 'helm-locate-library)
+(spacemacs/set-leader-keys "aa" 'zilongshanren/capture-screenshot-simple)

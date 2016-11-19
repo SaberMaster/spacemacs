@@ -227,7 +227,10 @@ unwanted space when exporting org-mode to html."
       ;;http://www.howardism.org/Technical/Emacs/journaling-org.html
       ;;add multi-file journal
       (setq org-capture-templates
-            '(("t" "Todo" entry (file+headline "~/org-notes/gtd.org" "Workspace")
+            '(("t" "Todo work" entry (file+headline "~/org-notes/gtd.org" "Workspace")
+               "* TODO [#B] %?\n  %i\n"
+               :empty-lines 1)
+              ("h" "Todo home" entry (file+headline "~/org-notes/gtd_home.org" "Home")
                "* TODO [#B] %?\n  %i\n"
                :empty-lines 1)
               ("n" "notes" entry (file+headline "~/org-notes/notes.org" "Quick notes")
