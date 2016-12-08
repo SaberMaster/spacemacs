@@ -276,13 +276,11 @@ unwanted space when exporting org-mode to html."
       (defvar zilongshanren-website-html-preamble
         "<div class='nav'>
 <ul>
-<li><a href='http://zilongshanren.com'>博客</a></li>
 <li><a href='/index.html'>Wiki目录</a></li>
 </ul>
 </div>")
       (defvar zilongshanren-website-html-blog-head
-        " <link rel='stylesheet' href='css/site.css' type='text/css'/> \n
-    <link rel=\"stylesheet\" type=\"text/css\" href=\"/css/worg.css\"/>")
+        "<link rel=\"stylesheet\" type=\"text/css\" href=\"css/worg.css\"/>")
       (setq org-publish-project-alist
             `(
               ("blog-notes"
@@ -299,8 +297,8 @@ unwanted space when exporting org-mode to html."
                :exclude-tags ("ol" "noexport")
                :section-numbers nil
                :html-preamble ,zilongshanren-website-html-preamble
-               :author "zilongshanren"
-               :email "guanghui8827@gmail.com"
+               :author "Lyn"
+               :email "lyn1990828@gmail.com"
                :auto-sitemap t          ; Generate sitemap.org automagically...
                :sitemap-filename "index.org" ; ... call it sitemap.org (it's the default)...
                :sitemap-title "我的wiki"     ; ... with title 'Sitemap'.
