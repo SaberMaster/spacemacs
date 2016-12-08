@@ -703,7 +703,7 @@
         )
   ;; (setq message-send-mail-function 'mailclient-send-it)
   ;; Personal info
-  (setq user-full-name "刘亚男 Lyn Liu") ; FIXME: add your info here
+  (setq user-full-name "Lyn Liu") ; FIXME: add your info here
   (setq user-mail-address "liuyanan@oradt.com") ; FIXME: add your info here
 
   ;; smtp setup
