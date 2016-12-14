@@ -616,6 +616,7 @@ See `org-capture-templates' for more information."
                :sitemap-title "我的wiki"     ; ... with title 'Sitemap'.
                :sitemap-sort-files anti-chronologically
                :sitemap-file-entry-format "%t" ; %d to output date, we don't need date here
+               :with-sub-superscript nil
                )
               ("blog-static"
                :base-directory "~/org-notes"
