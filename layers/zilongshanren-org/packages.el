@@ -280,7 +280,11 @@ unwanted space when exporting org-mode to html."
 </ul>
 </div>")
       (defvar zilongshanren-website-html-blog-head
-        "<link rel=\"stylesheet\" type=\"text/css\" href=\"css/worg.css\"/>")
+        (concat "<link rel=\"stylesheet\" type=\"text/css\" href=\""
+                (expand-file-name
+                 "~/org-notes/css/worg.css")
+                "\"/> \n")
+        )
       (setq org-publish-project-alist
             `(
               ("blog-notes"
@@ -293,7 +297,7 @@ unwanted space when exporting org-mode to html."
                :publishing-function org-html-publish-to-html
                :headline-levels 4       ; Just the default for this project.
                :auto-preamble t
-               :exclude "gtd.org"
+               :exclude "gtd.org\\|gtd_home.org\\|notes.org"
                :exclude-tags ("ol" "noexport")
                :section-numbers nil
                :html-preamble ,zilongshanren-website-html-preamble
@@ -304,6 +308,7 @@ unwanted space when exporting org-mode to html."
                :sitemap-title "我的wiki"     ; ... with title 'Sitemap'.
                :sitemap-sort-files anti-chronologically
                :sitemap-file-entry-format "%t" ; %d to output date, we don't need date here
+               :with-sub-superscript nil
                )
               ("blog-static"
                :base-directory "~/org-notes"
