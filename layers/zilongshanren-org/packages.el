@@ -176,9 +176,9 @@
 
       ;; (add-hook 'org-after-todo-state-change-hook 'org-subtask-reset)
 
-      (setq plantuml-jar-path (expand-file-name "~/.emacs.d.his/scripts/plantuml/plantuml.jar"))
+      (setq plantuml-jar-path (expand-file-name "~/.spacemacs.d/plantuml.jar"))
 
-      (setq org-plantuml-jar-path (expand-file-name "~/.emacs.d.his/scripts/plantuml/plantuml.jar"))
+      (setq org-plantuml-jar-path (expand-file-name "~/.spacemacs.d/plantuml.jar"))
 
       (setq org-ditaa-jar-path (expand-file-name "~/.spacemacs.d/ditaa.jar"))
 
