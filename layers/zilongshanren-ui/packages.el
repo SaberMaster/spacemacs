@@ -108,7 +108,10 @@
                                                    'face 'font-lock-type-face
                                                    'help-echo "Buffer is read-only"))))
                  "] "
-
+                 ;; nyan
+                 '(:eval (when (and (nyan-mode)
+                                    (> (window-width) 120))
+                           (list (nyan-create))))
                  ;; anzu
                  anzu--mode-line-format
 
