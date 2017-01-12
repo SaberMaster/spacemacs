@@ -75,6 +75,9 @@ This function should only modify configuration layer settings."
             shell-default-term-shell "/bin/zsh")
      ;; docker
      latex
+     docker
+     ;; latex
+     (colors :variables colors-enable-nyan-cat-progress-bar t)
      deft
      php
      markdown
