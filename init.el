@@ -39,6 +39,7 @@
      (shell :variables shell-default-shell 'eshell)
      docker
      ;; latex
+     (colors :variables colors-enable-nyan-cat-progress-bar t)
      deft
      php
      markdown
