@@ -259,6 +259,10 @@ object (e.g., within a comment).  In these case, you need to use
       (setq org-agenda-window-setup 'current-window)
       (setq org-log-done t)
 
+      ;; bigger latex fragment
+      (plist-put org-format-latex-options :scale 1.5)
+      (plist-put org-format-latex-options :html-scale 1.3)
+
       ;; 加密文章
       ;; "http://coldnew.github.io/blog/2013/07/13_5b094.html"
       ;; org-mode 設定
