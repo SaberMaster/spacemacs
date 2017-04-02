@@ -78,7 +78,7 @@ This function should only modify configuration layer settings."
      (colors :variables colors-enable-nyan-cat-progress-bar t)
      deft
      php
-     markdown
+     (markdown :variables markdown-live-preview-engine 'vmd)
      (org :variables org-want-todo-bindings t
           org-enable-reveal-js-support 't
           org-enable-hugo-support t)
