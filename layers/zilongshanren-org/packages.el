@@ -19,6 +19,7 @@
     org-pomodoro
     deft
     ox-reveal
+    (org-opml :location local)
     ;; org-tree-slide
     ;; worf
     ;; org-download
@@ -485,4 +486,9 @@ holding contextual information."
     (setq deft-recursive t)
     (setq deft-extension "org")
     (setq deft-directory "~/org-notes")))
+
+
+(defun zilongshanren-org/init-org-opml ()
+  "Initialize org-opml"
+  (use-package org-opml))
 ;;; packages.el ends here
