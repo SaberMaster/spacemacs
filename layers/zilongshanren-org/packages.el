@@ -25,6 +25,7 @@
     org-super-agenda
     cal-china-x
     ox-reveal
+    (org-opml :location local)
     ;; org-tree-slide
     ;; worf
     ;; org-download
@@ -780,4 +781,9 @@ holding contextual information."
   (use-package sound-wav
     :defer t
     :init))
+
+
+(defun zilongshanren-org/init-org-opml ()
+  "Initialize org-opml"
+  (use-package org-opml))
 ;;; packages.el ends here
