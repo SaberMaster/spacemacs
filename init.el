@@ -42,7 +42,7 @@
      (colors :variables colors-enable-nyan-cat-progress-bar t)
      deft
      php
-     markdown
+     (markdown :variables markdown-live-preview-engine 'vmd)
      (org :variables org-enable-reveal-js-support 't)
      shaders
      yaml
