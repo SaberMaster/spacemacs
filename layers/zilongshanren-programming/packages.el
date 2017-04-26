@@ -32,6 +32,7 @@
         web-mode
         js-doc
         lua-mode
+        sml-mode
         (cc-mode :location built-in)
         ;; flycheck-clojure
         ;; etags-select
@@ -522,6 +523,20 @@
     ;;                     "lower") company-keywords-alist))
 
     ))
+
+;; change the sml-mode default code-template
+(defun zilongshanren-programming/post-init-sml-mode ()
+  (progn
+    (with-eval-after-load 'sml-mode
+      (sml-def-skeleton "val" nil
+        _ >)
+
+      (sml-def-skeleton "fn" nil
+        _ >)
+
+      (sml-def-skeleton "fun" nil
+        _ >)
+      )))
 
 (defun zilongshanren-programming/post-init-cc-mode ()
   (progn
