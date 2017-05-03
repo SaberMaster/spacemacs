@@ -528,6 +528,15 @@
 (defun zilongshanren-programming/post-init-sml-mode ()
   (progn
     (with-eval-after-load 'sml-mode
+      (sml-def-skeleton "let" nil
+                        _ "\nin " > _ "\nend" >)
+
+      (sml-def-skeleton "if" nil
+                        _ "\nthen " > _ "\nelse " > _)
+
+      (sml-def-skeleton "local" nil
+                        _ "\nin" > _ "\nend" >)
+
       (sml-def-skeleton "val" nil
         _ >)
 
