@@ -90,7 +90,9 @@ This function should only modify configuration layer settings."
              python-backend 'lsp
              python-lsp-server 'mspyls
              python-lsp-git-root "~/Github/python-language-server")
-     ;; (ruby :variables ruby-version-manager 'chruby)
+     ;; ipython-notebook
+     ;; (ruby :variables ruby-enable-enh-ruby-mode t
+     ;;       ruby-version-manager 'chruby)
      ;; ruby-on-rails
      ;; lua
      html
