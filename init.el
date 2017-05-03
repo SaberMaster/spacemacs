@@ -49,6 +49,7 @@
      react
      (python :variables
              python-test-runner '(nose pytest))
+     ;; ipython-notebook
      ;; (ruby :variables ruby-enable-enh-ruby-mode t
      ;;       ruby-version-manager 'chruby)
      ;; ruby-on-rails
