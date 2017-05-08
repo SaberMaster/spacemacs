@@ -68,6 +68,7 @@
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode)
      zilongshanren
+     lyn
      (chinese :packages youdao-dictionary fcitx
               :variables chinese-enable-fcitx nil
               chinese-enable-youdao-dict t)
