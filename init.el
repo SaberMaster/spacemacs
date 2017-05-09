@@ -44,25 +44,34 @@
      php
      (markdown :variables markdown-live-preview-engine 'vmd)
      (org :variables org-enable-reveal-js-support 't)
-     shaders
+     ;; ;; game shaders package
+     ;; shaders
      yaml
-     react
+     ;; ;; react layer
+     ;; react
      (python :variables
              python-test-runner '(nose pytest))
      ipython-notebook
+     ;; ;; ruby layer
      ;; (ruby :variables ruby-enable-enh-ruby-mode t
      ;;       ruby-version-manager 'chruby)
+     ;; ;; ruby on rails layer
      ;; ruby-on-rails
+     ;; ;; lua layer
      ;; lua
      html
      javascript
-     (typescript :variables
-                 typescript-fmt-on-save nil
-                 typescript-fmt-tool 'typescript-formatter)
+     ;; ;; typescript language layer
+     ;; (typescript :variables
+     ;;             typescript-fmt-on-save nil
+     ;;             typescript-fmt-tool 'typescript-formatter)
      emacs-lisp
      sml
+     ;; ;; coljure language
      ;; (clojure :variables clojure-enable-fancify-symbols t)
-     racket
+     ;; ;; a programming language
+     ;; racket
+     ;; ;; mu4e emacs handle mail
      ;; (mu4e :variables
      ;;       mu4e-installation-path "/usr/local/Cellar/mu/0.9.16/share/emacs/site-lisp/mu/mu4e")
      (c-c++ :variables
