@@ -200,6 +200,7 @@
          (C . t)
          (ditaa . t)
          (plantuml . t)
+         (java . t)
          ;; (perl . t)
          ;; (ruby . t)
          )
