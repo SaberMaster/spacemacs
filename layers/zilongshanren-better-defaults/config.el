@@ -1,6 +1,6 @@
 ;;; config.el --- zilongshanren Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2015-2016 zilongshanren
+;; Copyright (c) 2014-2016 zilongshanren
 ;;
 ;; Author: zilongshanren <guanghui8827@gmail.com>
 ;; URL: https://github.com/zilongshanren/spacemacs-private
@@ -90,14 +90,12 @@
             kill-buffer-query-functions))
 
 ;; cleanup recent files
-(defun zilongshanren/cleanup-recentf-and-known-projects ()
+(defun zilongshanren/cleanup-recentf ()
   (progn
     (and (fboundp 'recentf-cleanup)
-         (recentf-cleanup))
-    (and (fboundp 'projectile-cleanup-known-projects)
-         (projectile-cleanup-known-projects))))
+         (recentf-cleanup))))
 
-(add-hook 'kill-emacs-hook #'zilongshanren/cleanup-recentf-and-known-projects)
+(add-hook 'kill-emacs-hook #'zilongshanren/cleanup-recentf)
 
 ;; change evil initial mode state
 (menu-bar-mode t)
@@ -153,7 +151,8 @@ Single Capitals as you type."
           (make-directory dir t))))))
 
 (add-hook 'minibuffer-inactive-mode-hook
-          #'(lambda() (set (make-local-variable 'semantic-mode) nil)))
+          #'(lambda() (set (make-local-variable 'semantic-mode) nil)
+              (set (make-local-variable 'electric-pair-mode) nil)))
 
 ;; http://trey-jackson.blogspot.com/2010/04/emacs-tip-36-abort-minibuffer-when.html
 (defun zilongshanren/stop-using-minibuffer ()
@@ -177,3 +176,7 @@ Single Capitals as you type."
             ',variable ,value))
 
 (csetq ediff-diff-options "-w")
+
+(setq backup-by-copying t
+      make-backup-files nil
+      create-lockfiles nil)

@@ -21,9 +21,6 @@
  '(expand-region-exclude-text-mode-expansions (quote (html-mode nxml-mode web-mode)))
  '(expand-region-reset-fast-key "r")
  '(global-command-log-mode nil)
- '(golden-ratio-exclude-modes
-   (quote
-    ("bs-mode" "calc-mode" "ediff-mode" "dired-mode" "gud-mode" "gdb-locals-mode" "gdb-registers-mode" "gdb-breakpoints-mode" "gdb-threads-mode" "gdb-frames-mode" "gdb-inferior-io-mode" "gud-mode" "gdb-inferior-io-mode" "gdb-disassembly-mode" "gdb-memory-mode" "restclient-mode" "speedbar-mode" term-mode)))
  '(helm-buffer-max-length 56)
  '(helm-move-to-line-cycle-in-source t)
  '(ivy-height 18)
@@ -74,6 +71,7 @@
  '(js2-external-variable ((t (:foreground "plum3"))))
  '(mc/cursor-bar-face ((t (:background "chartreuse3"))))
  '(show-paren-match ((t (:background "dark gray" :foreground "#d33682" :weight bold))))
- '(sp-show-pair-match-face ((t (:background "#272822" :foreground "gray" :inverse-video t :weight normal)))))
+ '(sp-show-pair-match-face ((t (:background "#272822" :foreground "gray" :inverse-video t :weight normal))))
+ '(web-mode-current-element-highlight-face ((t (:background "dark gray")))))
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
