@@ -9,4 +9,3 @@
 ;;
 ;;; License: GPLv3
 
-(spacemacs|defvar-company-backends sml-mode)
