@@ -78,6 +78,7 @@ This function should only modify configuration layer settings."
      (colors :variables colors-enable-nyan-cat-progress-bar t)
      deft
      php
+     java
      (markdown :variables markdown-live-preview-engine 'vmd)
      (org :variables org-want-todo-bindings t
           org-enable-reveal-js-support 't
@@ -383,7 +384,6 @@ It should only modify the values of Spacemacs settings."
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
    dotspacemacs-maximized-at-startup nil
-
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
