@@ -21,6 +21,9 @@
     ob-typescript
     ox-reveal
     (org-opml :location local)
+    ;; (blog-admin :location (recipe
+    ;;                        :fetcher github
+    ;;                        :repo "codefalling/blog-admin"))
     ;; org-tree-slide
     ;; worf
     ;; org-download
