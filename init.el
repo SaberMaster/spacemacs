@@ -84,18 +84,24 @@ This function should only modify configuration layer settings."
      (org :variables org-want-todo-bindings t
           org-enable-reveal-js-support 't
           org-enable-hugo-support t)
-     gpu
+     ;; gpu
+     ;; ;; game shaders package
+     ;; shaders
      yaml
-     react
+     ;; ;; react layer
+     ;; react
      (python :variables
              python-test-runner '(nose pytest)
              python-backend 'lsp
              python-lsp-server 'mspyls
              python-lsp-git-root "~/Github/python-language-server")
      ipython-notebook
+     ;; ;; ruby layer
      ;; (ruby :variables ruby-enable-enh-ruby-mode t
      ;;       ruby-version-manager 'chruby)
+     ;; ;; ruby on rails layer
      ;; ruby-on-rails
+     ;; ;; lua layer
      ;; lua
      html
      (javascript :variables javascript-backend 'lsp)
@@ -105,8 +111,11 @@ This function should only modify configuration layer settings."
                 typescript-backend 'lsp)
      emacs-lisp
      sml
+     ;; ;; coljure language
      ;; (clojure :variables clojure-enable-fancify-symbols t)
-     racket
+     ;; ;; a programming language
+     ;; racket
+     ;; ;; mu4e emacs handle mail
      ;; (mu4e :variables
      ;;       mu4e-installation-path "/usr/local/Cellar/mu/0.9.16/share/emacs/site-lisp/mu/mu4e")
      (c-c++ :variables

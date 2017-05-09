@@ -466,6 +466,7 @@ object (e.g., within a comment).  In these case, you need to use
          (C . t)
          (ditaa . t)
          (plantuml . t)
+         (java . t)
          ;; (perl . t)
          ;; (ruby . t)
          )
