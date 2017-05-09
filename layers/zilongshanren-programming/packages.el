@@ -201,6 +201,9 @@
 ;;       (setq inferior-js-program-command "node"))))
 
 (defun zilongshanren-programming/post-init-web-mode ()
+  (with-eval-after-load "web-mode"
+    (web-mode-toggle-current-element-highlight)
+    (web-mode-dom-errors-show))
   (setq company-backends-web-mode '((company-dabbrev-code
                                      company-keywords
                                      company-etags)
@@ -252,7 +255,6 @@
 (defun zilongshanren-programming/init-lispy ()
   (use-package lispy
     :defer t
-    :diminish (lispy-mode)
     :init
     (progn
       (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
@@ -261,18 +263,24 @@
       ;; (add-hook 'spacemacs-mode-hook (lambda () (lispy-mode 1)))
       (add-hook 'clojure-mode-hook (lambda () (lispy-mode 1)))
       (add-hook 'scheme-mode-hook (lambda () (lispy-mode 1)))
-      ;; (add-hook 'cider-repl-mode-hook (lambda () (lispy-mode 1)))
+      (add-hook 'cider-repl-mode-hook (lambda () (lispy-mode 1)))
       )
     :config
     (progn
       (push '(cider-repl-mode . ("[`'~@]+" "#" "#\\?@?")) lispy-parens-preceding-syntax-alist)
+
+      (spacemacs|hide-lighter lispy-mode)
+      (define-key lispy-mode-map (kbd "s-j") 'lispy-splice)
+      (define-key lispy-mode-map (kbd "s-k") 'paredit-splice-sexp-killing-backward)
+
+      (with-eval-after-load 'cider-repl
+        (define-key cider-repl-mode-map (kbd "C-s-j") 'cider-repl-newline-and-indent))
 
       (add-hook
        'minibuffer-setup-hook
        'conditionally-enable-lispy)
       (define-key lispy-mode-map (kbd "s-m") 'lispy-mark-symbol)
       (define-key lispy-mode-map (kbd "s-1") 'lispy-describe-inline)
-      (define-key lispy-mode-map (kbd "s-k") 'lispy-splice)
       (define-key lispy-mode-map (kbd "s-2") 'lispy-arglist-inline))))
 
 
@@ -341,6 +349,9 @@
 
     (add-hook 'js2-mode-hook 'my-js2-mode-hook)
 
+    ;; add your own keywords highlight here
+    (font-lock-add-keywords 'js2-mode
+                            '(("\\<\\(cc\\)\\>" 1 font-lock-type-face)))
 
     (spacemacs/declare-prefix-for-mode 'js2-mode "ms" "repl")
 
@@ -351,7 +362,7 @@
         (setq-default js2-allow-rhino-new-expr-initializer nil)
         (setq-default js2-auto-indent-p nil)
         (setq-default js2-enter-indents-newline nil)
-        (setq-default js2-global-externs '("module" "require" "buster" "sinon" "assert" "refute" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
+        (setq-default js2-global-externs '("module" "ccui" "require" "buster" "sinon" "assert" "refute" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
         (setq-default js2-idle-timer-delay 0.2)
         (setq-default js2-mirror-mode nil)
         (setq-default js2-strict-inconsistent-return-warning nil)
@@ -364,7 +375,7 @@
         (setq-default js2-bounce-indent nil)
         (setq-default js-indent-level 4)
         (setq-default js2-basic-offset 4)
-        (setq-default js-switch-indent-offset 2)
+        (setq-default js-switch-indent-offset 4)
         ;; Let flycheck handle parse errors
         (setq-default js2-mode-show-parse-errors nil)
         (setq-default js2-mode-show-strict-warnings nil)
@@ -580,8 +591,6 @@
                paredit-splice-sexp-killing-backward)
     :init
     (progn
-      (bind-key* "s-j"
-                 #'paredit-splice-sexp-killing-backward)
 
       (bind-key* "s-(" #'paredit-wrap-round)
       (bind-key* "s-[" #'paredit-wrap-square)
@@ -594,17 +603,8 @@
           company-idle-delay 0.08)
 
     (when (configuration-layer/package-usedp 'company)
-      (spacemacs|add-company-hook shell-script-mode)
-      (spacemacs|add-company-hook makefile-bsdmake-mode)
-      (spacemacs|add-company-hook sh-mode)
-      (spacemacs|add-company-hook lua-mode)
-      (spacemacs|add-company-hook nxml-mode)
-      (spacemacs|add-company-hook conf-unix-mode)
-      (spacemacs|add-company-hook json-mode)
-      (spacemacs|add-company-hook graphviz-dot-mode)
-      )
+      (spacemacs|add-company-backends :modes shell-script-mode makefile-bsdmake-mode sh-mode lua-mode nxml-mode conf-unix-mode json-mode graphviz-dot-mode))
     ))
-
 (defun zilongshanren-programming/post-init-company-c-headers ()
   (progn
     (setq company-c-headers-path-system

@@ -15,17 +15,34 @@
   '(
     (org :location built-in)
     org-mac-link
-    org-octopress
     org-pomodoro
     deft
     ox-reveal
     (org-opml :location local)
+    (blog-admin :location (recipe
+                           :fetcher github
+                           :repo "codefalling/blog-admin"))
     ;; org-tree-slide
     ;; worf
     ;; org-download
     ;; plain-org-wiki
     )
-)
+  )
+
+(defun zilongshanren-org/init-blog-admin ()
+  (use-package blog-admin
+    :defer t
+    :commands blog-admin-start
+    :init
+    (progn
+      ;; do your configuration here
+      (setq blog-admin-backend-type 'hexo
+            blog-admin-backend-path blog-admin-dir
+            blog-admin-backend-new-post-with-same-name-dir nil
+            blog-admin-backend-hexo-config-file "_config.yml"
+            )
+      (add-hook 'blog-admin-backend-after-new-post-hook 'find-file)
+      )))
 
 (defun zilongshanren-org/post-init-org-pomodoro ()
   (progn
@@ -41,9 +58,7 @@
   (add-hook 'org-mode-hook (lambda () (spacemacs/toggle-line-numbers-off)) 'append)
   (with-eval-after-load 'org
     (progn
-      ;; https://github.com/syl20bnr/spacemacs/issues/2994#issuecomment-139737911
-      ;; (when (configuration-layer/package-usedp 'company)
-      ;;   (spacemacs|add-company-hook org-mode))
+
       (spacemacs|disable-company org-mode)
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
         "," 'org-priority)
@@ -62,7 +77,8 @@
       (setq org-stuck-projects
             '("TODO={.+}/-DONE" nil nil "SCHEDULED:\\|DEADLINE:"))
 
-      (setq org-agenda-inhibit-startup t)   ;; ~50x speedup
+      (setq org-agenda-inhibit-startup t) ;; ~50x speedup
+      (setq org-agenda-span 'day)
       (setq org-agenda-use-tag-inheritance nil) ;; 3-4x speedup
       (setq org-agenda-window-setup 'current-window)
       (setq org-log-done t)
@@ -221,8 +237,12 @@ unwanted space when exporting org-mode to html."
           (ad-set-arg 1 fixed-contents)))
 
       ;; define the refile targets
-      (setq org-agenda-files (quote ("~/org-notes" )))
-      (setq org-default-notes-file "~/org-notes/gtd.org")
+      (setq org-agenda-file-note (expand-file-name "notes.org" org-agenda-dir))
+      (setq org-agenda-file-gtd (expand-file-name "gtd.org" org-agenda-dir))
+      (setq org-agenda-file-journal (expand-file-name "journal.org" org-agenda-dir))
+      (setq org-agenda-file-code-snippet (expand-file-name "snippet.org" org-agenda-dir))
+      (setq org-default-notes-file (expand-file-name "gtd.org" org-agenda-dir))
+      (setq org-agenda-files (list org-agenda-dir))
 
       (with-eval-after-load 'org-agenda
         (define-key org-agenda-mode-map (kbd "P") 'org-pomodoro)
@@ -239,14 +259,14 @@ unwanted space when exporting org-mode to html."
               ("h" "Todo home" entry (file+headline "~/org-notes/gtd_home.org" "Home")
                "* TODO [#B] %?\n  %i\n"
                :empty-lines 1)
-              ("n" "notes" entry (file+headline "~/org-notes/notes.org" "Quick notes")
+              ("n" "notes" entry (file+headline org-agenda-file-note "Quick notes")
                "* %?\n  %i\n %U"
                :empty-lines 1)
-              ("b" "Blog Ideas" entry (file+headline "~/org-notes/notes.org" "Blog Ideas")
+              ("b" "Blog Ideas" entry (file+headline org-agenda-file-note "Blog Ideas")
                "* TODO [#B] %?\n  %i\n %U"
                :empty-lines 1)
               ("s" "Code Snippet" entry
-               (file "~/org-notes/snippets.org")
+               (file org-agenda-file-code-snippet)
                "* %?\t%^g\n#+BEGIN_SRC %^{language}\n\n#+END_SRC")
               ;; ("w" "work" entry (file+headline "~/org-notes/gtd.org" "Cocos2D-X")
               ;;  "* TODO [#A] %?\n  %i\n %U"
@@ -254,11 +274,11 @@ unwanted space when exporting org-mode to html."
               ("c" "Chrome" entry (file+headline "~/org-notes/notes.org" "Quick notes")
                "* TODO [#C] %?\n %(zilongshanren/retrieve-chrome-current-tab-url)\n %i\n %U"
                :empty-lines 1)
-              ("l" "links" entry (file+headline "~/org-notes/notes.org" "Quick notes")
+              ("l" "links" entry (file+headline org-agenda-file-note "Quick notes")
                "* TODO [#C] %?\n  %i\n %a \n %U"
                :empty-lines 1)
               ("j" "Journal Entry"
-               entry (file+datetree "~/org-notes/journal.org")
+               entry (file+datetree org-agenda-file-journal)
                "* %?"
                :empty-lines 1)))
 
@@ -334,7 +354,6 @@ unwanted space when exporting org-mode to html."
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
         "tl" 'org-toggle-link-display)
       (define-key evil-normal-state-map (kbd "C-c C-w") 'org-refile)
-      (setq org-mobile-directory "~/org-notes/org")
 
       ;; hack for org headline toc
       (defun org-html-headline (headline contents info)
@@ -437,23 +456,6 @@ holding contextual information."
 ;; (defun zilongshanren-org/pre-init-ox-reveal ()
 ;;   (setq org-enable-reveal-js-support 't)
 ;;   )
-
-(defun zilongshanren-org/init-org-octopress ()
-  (use-package org-octopress
-    :commands (org-octopress org-octopress-setup-publish-project)
-    :init
-    (progn
-      (evilified-state-evilify org-octopress-summary-mode org-octopress-summary-mode-map)
-      (add-hook 'org-octopress-summary-mode-hook
-                #'(lambda () (local-set-key (kbd "q") 'bury-buffer)))
-      (setq org-blog-dir "~/4gamers.cn/")
-      (setq org-octopress-directory-top org-blog-dir)
-      (setq org-octopress-directory-posts (concat org-blog-dir "source/_posts"))
-      (setq org-octopress-directory-org-top org-blog-dir)
-      (setq org-octopress-directory-org-posts (concat org-blog-dir "blog"))
-      (setq org-octopress-setup-file (concat org-blog-dir "setupfile.org"))
-
-      )))
 
 
 (defun zilongshanren-org/init-org-tree-slide ()

@@ -172,7 +172,7 @@ org-files and bookmarks"
   `((name . "Mail and News")
     (candidates . (("Calendar" . (lambda ()  (browse-url "https://www.google.com/calendar/render")))
                    ("RSS" . elfeed)
-                   ("Blog" . org-octopress)
+                   ("Blog" . blog-admin-start)
                    ("Github" . (lambda() (helm-github-stars)))
                    ("Calculator" . (lambda () (helm-calcul-expression)))
                    ("Run current flie" . (lambda () (zilongshanren/run-current-file)))
@@ -224,11 +224,10 @@ e.g. Sunday, September 17, 2000."
 
 (defun zilongshanren/open-file-with-projectile-or-counsel-git ()
   (interactive)
-  (if (zilongshanren/vcs-project-root)
-      (counsel-git)
-    (if (projectile-project-p)
-        (projectile-find-file)
-      (counsel-file-jump))))
+  (if (or (zilongshanren/vcs-project-root)
+          (projectile-project-p))
+      (projectile-find-file)
+    (counsel-file-jump)))
 
 
 ;; http://blog.lojic.com/2009/08/06/send-growl-notifications-from-carbon-emacs-on-osx/
@@ -481,7 +480,7 @@ With PREFIX, cd to project root."
 (defun ivy-ff-checksum ()
   (interactive)
   "Calculate the checksum of FILE. The checksum is copied to kill-ring."
-  (let ((file (expand-file-name ivy--current ivy--directory))
+  (let ((file (expand-file-name (ivy-state-current ivy-last) ivy--directory))
         (algo (intern (ivy-read
                        "Algorithm: "
                        '(md5 sha1 sha224 sha256 sha384 sha512)))))
@@ -489,6 +488,9 @@ With PREFIX, cd to project root."
                 (insert-file-contents-literally file)
                 (secure-hash algo (current-buffer))))
     (message "Checksum copied to kill-ring.")))
+
+(defun ivy-ff-checksum-action (x)
+  (ivy-ff-checksum))
 
 (defun my-find-file-in-git-repo (repo)
   (if (file-directory-p repo)
@@ -502,7 +504,8 @@ With PREFIX, cd to project root."
 (defun my-open-file-in-external-app (file)
   "Open file in external application."
   (interactive)
-  (let ((file-path file))
+  (let ((default-directory (zilongshanren/vcs-project-root))
+        (file-path file))
     (if file-path
         (cond
          ((spacemacs/system-is-mswindows) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\\\" file-path)))
@@ -514,6 +517,10 @@ With PREFIX, cd to project root."
 (defun ivy-insert-action (x)
   (with-ivy-window
     (insert x)))
+
+(defun ivy-kill-new-action (x)
+  (with-ivy-window
+    (kill-new x)))
 
 (defun counsel-goto-recent-directory ()
   "Recent directories"
