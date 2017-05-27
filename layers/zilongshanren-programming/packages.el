@@ -528,10 +528,10 @@
         _ >)
 
       (sml-def-skeleton "fn" nil
-        _ >)
+        _ " => ")
 
       (sml-def-skeleton "fun" nil
-        _ >)
+        _ " = ")
       )))
 
 (defun zilongshanren-programming/post-init-cc-mode ()
