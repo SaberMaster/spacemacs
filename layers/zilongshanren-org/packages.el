@@ -396,14 +396,14 @@ See `org-capture-templates' for more information."
               ("blog-notes"
                :base-directory "~/org-notes"
                :base-extension "org"
-               :publishing-directory "~/org-notes/public_html/"
+               :publishing-directory "~/Documents/Note/org-notes/public_html/"
 
                :recursive t
                :html-head , zilongshanren-website-html-blog-head
                :publishing-function org-html-publish-to-html
                :headline-levels 4       ; Just the default for this project.
                :auto-preamble t
-               :exclude "gtd.org\\|gtd_home.org\\|notes.org"
+               :exclude "gtd.org\\|gtd_home.org\\|notes.org\\|diary"
                :exclude-tags ("ol" "noexport")
                :section-numbers nil
                :html-preamble ,zilongshanren-website-html-preamble

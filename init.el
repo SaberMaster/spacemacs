@@ -109,7 +109,12 @@ This function should only modify configuration layer settings."
                  typescript-fmt-tool 'typescript-formatter
                 typescript-backend 'lsp)
      emacs-lisp
-     sml
+     ;; programming-language
+     ;; sml
+     ;; racket
+     ;; (ruby :variables ruby-enable-enh-ruby-mode t
+     ;;       ruby-version-manager 'rvm)
+
      ;; ;; coljure language
      ;; (clojure :variables clojure-enable-fancify-symbols t)
      ;; ;; a programming language
