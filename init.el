@@ -66,7 +66,12 @@
      ;;             typescript-fmt-on-save nil
      ;;             typescript-fmt-tool 'typescript-formatter)
      emacs-lisp
-     sml
+     ;; programming-language
+     ;; sml
+     ;; racket
+     ;; (ruby :variables ruby-enable-enh-ruby-mode t
+     ;;       ruby-version-manager 'rvm)
+
      ;; ;; coljure language
      ;; (clojure :variables clojure-enable-fancify-symbols t)
      ;; ;; a programming language

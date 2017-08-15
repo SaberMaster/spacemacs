@@ -40,6 +40,6 @@
 (defun lyn-programming/post-init-company ()
   (progn
     (when (configuration-layer/package-usedp 'company)
-      (spacemacs|add-company-hook sml-mode)
+      (spacemacs|add-company-backends :modes sml-mode racket-mode)
       )
     ))
