@@ -65,6 +65,7 @@ Each entry is either:
 (defun lyn-org/post-init-org ()
   (with-eval-after-load 'org
     (progn
+      ;; C-c C-e h  output html add css style
       (defvar lyn-website-html-blog-head
         (concat "<link rel=\"stylesheet\" type=\"text/css\" href=\""
                 (expand-file-name
@@ -82,6 +83,7 @@ Each entry is either:
       (setq-default org-download-heading-lvl nil)
       ;; set download dir
       (setq-default org-download-image-dir "./_img/")
+
       (org-download-enable))))
 
 ;;; packages.el ends here
