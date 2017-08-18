@@ -2,6 +2,7 @@
 ;;
 ;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
 ;;
+
 ;; Author: Lyn <lyn1990828@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
 ;;
@@ -32,8 +33,9 @@
 (defconst lyn-org-packages
   '(
     (org :location built-in)
+    org-download
     )
-  "The list of Lisp packages required by the lyn-org layer.
+  "the list of Lisp packages required by the lyn-org layer.
 
 Each entry is either:
 
@@ -70,4 +72,18 @@ Each entry is either:
                 "\"/> \n")
         )
       (setq org-html-head lyn-website-html-blog-head))))
+
+(defun lyn-org/init-org-download ()
+  (use-package org-download
+    :defer t
+    :init
+    (progn
+      ;; set ignore lvl
+      (setq-default org-download-heading-lvl nil)
+      ;; set download dir
+      (setq-default org-download-image-dir "./_img/")
+      ;; set org-download-screenshot-method for mac
+      (setq-default org-download-screenshot-method "screencapture -i %s")
+      (org-download-enable))))
+
 ;;; packages.el ends here
