@@ -12,39 +12,37 @@
 
 (require 'cl)
 
+(defun lyn/org-default-image-path ()
+  "used for get different image save path"
+  (setq image-floder-name "_imgs")
+  (setq org-notes-path "~/org-notes")
+  (if (my-project-name-contains-substring "org-notes")
+      (progn
+        (concat (expand-file-name org-notes-path)
+                      "/source/"
+                      image-floder-name
+                      "/"
+                      (file-name-directory (file-relative-name (buffer-file-name) org-notes-path))
+                      (file-name-base (buffer-file-name))
+                      "/"))
+    (progn
+      (concat (file-name-directory (buffer-file-name))
+              image-floder-name
+              "/"
+              (file-name-base (buffer-file-name))
+              "/"))))
+
 (defun lyn/capture-screenshot-simple (basename)
   "Take a screenshot into a time stamped unique-named file in the
   same directory as the org-buffer/markdown-buffer and insert a link to this file."
   (interactive "sScreenshot name: ")
   (if (equal basename "")
       (setq basename (format-time-string "%Y%m%d_%H%M%S")))
-  (setq image-floder-name "_imgs")
-  (setq org-notes-path "~/org-notes")
-  (if (my-project-name-contains-substring "org-notes")
-      (progn
-        (setq image-save-path
-              (concat (expand-file-name org-notes-path)
-                      "/source/"
-                      image-floder-name
-                      "/"
-                      (file-name-directory (file-relative-name (buffer-file-name) org-notes-path))
-                      (file-name-base (buffer-file-name))
-                      "/"
-                      basename)))
-    (progn
-      (setq image-save-path
-            (concat (file-name-directory (buffer-file-name))
-                    image-floder-name
-                    "/"
-                    (file-name-base (buffer-file-name))
-                    "/"
-                    basename))))
-  (message image-save-path)
-  (unless (file-directory-p (file-name-directory image-save-path))
-    (make-directory (file-name-directory image-save-path) 't))
-  (setq final-image-full-path (concat image-save-path ".png"))
+  (setq image-save-path (lyn/org-default-image-path))
+  (unless (file-directory-p image-save-path)
+    (make-directory image-save-path 't))
+  (setq final-image-full-path (concat image-save-path basename ".png"))
   (setq relativepath (file-relative-name final-image-full-path (file-name-directory (buffer-file-name))))
-  (message relativepath)
   (call-process "screencapture" nil nil nil "-i" final-image-full-path)
   (if (executable-find "convert")
       (progn
