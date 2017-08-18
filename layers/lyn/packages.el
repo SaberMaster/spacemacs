@@ -17,4 +17,5 @@
 (configuration-layer/declare-layers '(
                                       lyn-programming
                                       lyn-org
+                                      lyn-ui
                                       ))

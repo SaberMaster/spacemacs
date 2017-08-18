@@ -1,8 +1,7 @@
-;;; packages.el --- lyn-org layer packages file for Spacemacs.
+;;; packages.el --- lyn-ui layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
 ;;
-
 ;; Author: Lyn <lyn1990828@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
 ;;
@@ -19,23 +18,20 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `lyn-org-packages'. Then, for each package PACKAGE:
+;; added to `lyn-ui-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `lyn-org/init-PACKAGE' to load and initialize the package.
+;;   function `lyn-ui/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `lyn-org/pre-init-PACKAGE' and/or
-;;   `lyn-org/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `lyn-ui/pre-init-PACKAGE' and/or
+;;   `lyn-ui/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
-(defconst lyn-org-packages
-  '(
-    (org :location built-in)
-    org-download
-    )
-  "the list of Lisp packages required by the lyn-org layer.
+(defconst lyn-ui-packages
+  '()
+  "The list of Lisp packages required by the lyn-ui layer.
 
 Each entry is either:
 
@@ -62,28 +58,5 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun lyn-org/post-init-org ()
-  (with-eval-after-load 'org
-    (progn
-      (defvar lyn-website-html-blog-head
-        (concat "<link rel=\"stylesheet\" type=\"text/css\" href=\""
-                (expand-file-name
-                 "~/org-notes/css/worg.css")
-                "\"/> \n")
-        )
-      (setq org-html-head lyn-website-html-blog-head))))
-
-(defun lyn-org/init-org-download ()
-  (use-package org-download
-    :defer t
-    :init
-    (progn
-      ;; set ignore lvl
-      (setq-default org-download-heading-lvl nil)
-      ;; set download dir
-      (setq-default org-download-image-dir "./_img/")
-      ;; set org-download-screenshot-method for mac
-      (setq-default org-download-screenshot-method "screencapture -i %s")
-      (org-download-enable))))
 
 ;;; packages.el ends here
