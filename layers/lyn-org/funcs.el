@@ -18,54 +18,33 @@
   (interactive "sScreenshot name: ")
   (if (equal basename "")
       (setq basename (format-time-string "%Y%m%d_%H%M%S")))
-  (setq image-floder-name
-        "_imgs")
+  (setq image-floder-name "_imgs")
+  (setq org-notes-path "~/org-notes")
   (if (my-project-name-contains-substring "org-notes")
       (progn
-        (setq directory-path
-              (concat (file-name-directory (buffer-file-name))
-                      "../source/"
+        (setq image-save-path
+              (concat (expand-file-name org-notes-path)
+                      "/source/"
                       image-floder-name
                       "/"
+                      (file-name-directory (file-relative-name (buffer-file-name) org-notes-path))
                       (file-name-base (buffer-file-name))
                       "/"
-                      ))
-        (setq relativepath
-              (concat "../source/"
-                      image-floder-name
-                      "/"
-                      (file-name-base (buffer-file-name))
-                      "/"
-                      (file-name-base (buffer-file-name))
-                      "_"
-                      basename
-                      ".png"))
-        )
+                      basename)))
     (progn
-      (setq directory-path
+      (setq image-save-path
             (concat (file-name-directory (buffer-file-name))
                     image-floder-name
                     "/"
-                    ))
-      (setq relativepath
-            (concat "./"
-                    image-floder-name
-                    "/"
                     (file-name-base (buffer-file-name))
-                    "_"
-                    basename
-                    ".png"))
-      )
-    )
-
-  (unless (file-directory-p directory-path)
-    (make-directory directory-path 't))
-  (setq fullpath
-        (concat directory-path
-                (file-name-base (buffer-file-name))
-                "_"
-                basename))
-  (setq final-image-full-path (concat fullpath ".png"))
+                    "/"
+                    basename))))
+  (message image-save-path)
+  (unless (file-directory-p (file-name-directory image-save-path))
+    (make-directory (file-name-directory image-save-path) 't))
+  (setq final-image-full-path (concat image-save-path ".png"))
+  (setq relativepath (file-relative-name final-image-full-path (file-name-directory (buffer-file-name))))
+  (message relativepath)
   (call-process "screencapture" nil nil nil "-i" final-image-full-path)
   (if (executable-find "convert")
       (progn

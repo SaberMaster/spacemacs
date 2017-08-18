@@ -73,17 +73,15 @@ Each entry is either:
         )
       (setq org-html-head lyn-website-html-blog-head))))
 
-(defun lyn-org/init-org-download ()
-  (use-package org-download
-    :defer t
-    :init
+(defun lyn-org/post-init-org-download ()
+  (with-eval-after-load 'org-download
     (progn
+      ;; set org-download-screenshot-method for mac
+      (setq org-download-screenshot-method "screencapture -i %s")
       ;; set ignore lvl
       (setq-default org-download-heading-lvl nil)
       ;; set download dir
       (setq-default org-download-image-dir "./_img/")
-      ;; set org-download-screenshot-method for mac
-      (setq-default org-download-screenshot-method "screencapture -i %s")
       (org-download-enable))))
 
 ;;; packages.el ends here
