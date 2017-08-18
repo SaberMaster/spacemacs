@@ -18,4 +18,4 @@
   (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
 
 ;; fix zilongshanren org ispell bug
-(add-hook 'org-mode-hook 'zilongshanren/org-ispell)
+(add-hook 'org-mode-hook #'zilongshanren/org-ispell)
