@@ -22,7 +22,9 @@
 (defun lyn/org-download-dir ()
   "Configure `org-download-image-dir` for every org buffer"
   ;; the org-download-image-dir is a local buffer variable
-  (setq org-download-image-dir (lyn/org-default-image-path)))
+  ;; check is is exist real buffer file name
+  (if (buffer-file-name)
+      (setq org-download-image-dir (lyn/org-default-image-path))))
 
 ;; format org-download image save path for every org buffer
 (add-hook 'org-mode-hook #'lyn/org-download-dir)
