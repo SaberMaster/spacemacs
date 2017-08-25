@@ -1,4 +1,4 @@
-;;; funs.el --- lyn-programming layer packages file for Spacemacs.
+;;; funcs.el --- lyn-programming layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
