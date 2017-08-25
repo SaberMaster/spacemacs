@@ -8,3 +8,9 @@
 ;; This file is not part of GNU Emacs.
 ;;
 ;;; License: GPLv3
+
+;; you can also set these environment variables in .zshenv or .profile
+;; set pyenv workon_home for active virtual env on org code block
+(setenv "WORKON_HOME" "/usr/local/opt/pyenv/versions")
+;; fix pyenv can't get right dir error
+(setenv "PYENV_ROOT" "/usr/local/opt/pyenv")
