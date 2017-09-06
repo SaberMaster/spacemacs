@@ -66,7 +66,7 @@ values."
      ;; latex
      (colors :variables colors-enable-nyan-cat-progress-bar t)
      deft
-     php
+     ;; php
      java
      (markdown :variables markdown-live-preview-engine 'vmd)
      (org :variables org-enable-reveal-js-support 't)
@@ -75,6 +75,7 @@ values."
      yaml
      ;; ;; react layer
      ;; react
+     octave
      (python :variables
              python-test-runner '(nose pytest))
      ipython-notebook
@@ -117,7 +118,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(sicp)
+   dotspacemacs-additional-packages '(sicp ob-ipython)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages

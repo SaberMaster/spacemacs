@@ -28,3 +28,12 @@
 
 ;; format org-download image save path for every org buffer
 (add-hook 'org-mode-hook #'lyn/org-download-dir)
+
+
+;; exec babel without confirm
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (member lang '("python" "octave" "ipython"))))
+
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+;; (add-to-list 'org-latex-minted-langs '(ipython "python"))
