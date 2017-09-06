@@ -77,7 +77,7 @@ This function should only modify configuration layer settings."
      ;; latex
      (colors :variables colors-enable-nyan-cat-progress-bar t)
      deft
-     php
+     ;; php
      java
      (markdown :variables markdown-live-preview-engine 'vmd)
      (org :variables org-want-todo-bindings t
@@ -89,6 +89,7 @@ This function should only modify configuration layer settings."
      yaml
      ;; ;; react layer
      ;; react
+     octave
      (python :variables
              python-test-runner '(nose pytest)
              python-backend 'lsp
@@ -140,7 +141,6 @@ This function should only modify configuration layer settings."
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(sicp ssh-agency)
-
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages
