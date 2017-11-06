@@ -34,8 +34,8 @@
   '(
     (org :location built-in)
     (scimax-org-babel-ipython :location local)
-    org-download
-    )
+    org-edit-latex
+    org-download)
   "the list of Lisp packages required by the lyn-org layer.
 
 Each entry is either:
@@ -76,7 +76,9 @@ wing values are legal:
                  "~/org-notes/css/worg.css")
                 "\"/> \n")
         )
-      (setq org-html-head lyn-website-html-blog-head))))
+      (setq org-html-head lyn-website-html-blog-head)
+      ;; set pdf export style
+      (lyn/init-org-export-latex-style))))
 
 (defun lyn-org/post-init-org-download ()
   (with-eval-after-load 'org-download
@@ -89,6 +91,14 @@ wing values are legal:
       (setq-default org-download-image-dir "./_img/")
 
       (org-download-enable))))
+
+
+(defun lyn-org/init-org-edit-latex ()
+  (use-package org-edit-latex
+    :defer t
+    :init
+    (add-hook 'org-mode-hook 'org-edit-latex-mode)
+    ))
 
 (defun lyn-org/init-scimax-org-babel-ipython ()
   (use-package  scimax-org-babel-ipython
@@ -169,6 +179,61 @@ It replaces the output in the results."
           ;; see if there is another thing in the queue.
           (org-babel-async-ipython-process-queue)))
 
+      (defun org-babel-execute:ipython (body params)
+        "Execute a block of IPython code with Babel.
+This function is called by `org-babel-execute-src-block'."
+        (let* ((file (cdr (assoc :file params)))
+               (session (cdr (assoc :session params)))
+               (async (cdr (assoc :async params)))
+               (result-type (cdr (assoc :result-type params)))
+               results)
+          (org-babel-ipython-initiate-session session params)
+
+          ;; Check the current results for inline images and delete the files.
+          (let ((location (org-babel-where-is-src-block-result))
+                current-results)
+            (when location
+              (save-excursion
+                (goto-char location)
+                (when (looking-at (concat org-babel-result-regexp ".*$"))
+                  (setq results (buffer-substring-no-properties
+                                 location
+                                 (save-excursion
+                                   (forward-line 1) (org-babel-result-end)))))))
+            (with-temp-buffer
+              (insert (or results ""))
+              (goto-char (point-min))
+              (while (re-search-forward
+                      "\\[\\[file:\\(ipython-inline-images/ob-ipython-.*?\\)\\]\\]" nil t)
+                (let ((f (match-string 1)))
+                  (when (file-exists-p f)
+                    (delete-file f))))))
+
+          (-when-let (ret (ob-ipython--eval
+                           (ob-ipython--execute-request
+                            (org-babel-expand-body:generic
+                             (encode-coding-string body 'utf-8)
+                             params (org-babel-variable-assignments:python params))
+                            (ob-ipython--normalize-session session))))
+            (let ((result (cdr (assoc :result ret)))
+                  (output (cdr (assoc :output ret))))
+              (if (eq result-type 'output)
+                  (concat
+                   ;; change here to fromat code
+                   (if (string-empty-p (s-trim output))
+                       (s-trim output)
+                     (format
+                      "#+BEGIN_EXAMPLE \n%s\n#+END_EXAMPLE\n"
+                      (s-trim output)))
+                   ;; output
+                   (ob-ipython--format-result
+                    result
+                    (cdr (assoc :ob-ipython-results params))))
+                ;; The result here is a value. We should still get inline images though.
+                (ob-ipython--create-stdout-buffer output)
+                (ob-ipython--format-result
+                 result (cdr (assoc :ob-ipython-results params))))))))
+
       ;; handle result
       (defun ob-ipython--format-result (result result-type)
         "Format a RESULT from an ipython cell.
@@ -197,7 +262,42 @@ Return RESULT-TYPE if specified. This comes from a header argument :ob-ipython-r
                (select-result-type result-type)
                (--map (format-result (car it) (cdr it)))
                (apply #'concat "\n"))))
-      )))
+      )
+    ;;** fixing ob-ipython-inspect cant open with `C-c ''
+    ;; bet as i change it we cant assign :session for ipython code block, its session name is `ipython'
+    (defun ob-ipython--inspect-request (code &optional pos detail)
+      "This function is used to inspect code at a position.
+This can provide information about the type, etc."
+      (let ((url-request-data (json-encode `((code . ,code)
+                                             (pos . ,(or pos (length code)))
+                                             (detail . ,(or detail 0)))))
+            (url-request-method "POST"))
+        (with-current-buffer (url-retrieve-synchronously
+                              (format "http://%s:%d/inspect/ipython"
+                                      ob-ipython-driver-hostname
+                                      ob-ipython-driver-port))
+          (if (>= (url-http-parse-response) 400)
+              (ob-ipython--dump-error (buffer-string))
+            (goto-char url-http-end-of-headers)
+            (let ((json-array-type 'list))
+              (json-read))))))
+
+    ;; This allows you to get completion from the ipython kernel.
+    (defun ob-ipython--complete-request (code &optional pos)
+      "Get completion candidates for the thing at POS from the kernel."
+      (let ((url-request-data (json-encode `((code . ,code)
+                                             (cursor_pos . ,(or pos (length code))))))
+            (url-request-method "POST"))
+        (with-current-buffer (url-retrieve-synchronously
+                              (format "http://%s:%d/complete/ipython"
+                                      ob-ipython-driver-hostname
+                                      ob-ipython-driver-port))
+          (if (>= (url-http-parse-response) 400)
+              (ob-ipython--dump-error (buffer-string))
+            (goto-char url-http-end-of-headers)
+            (let ((json-array-type 'list))
+              (json-read))))))
+    ))
 
 
 ;;; packages.el ends here

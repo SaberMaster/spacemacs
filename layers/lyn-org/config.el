@@ -36,4 +36,11 @@
 
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
+;; when export never exec babel, use default result
+(setq org-export-babel-evaluate nil)
+
+;; dont use unqiue kernel, it may influence other org-babel
+(setq ob-ipython-buffer-unique-kernel nil)
+;; not not use async
+(setq org-babel-async-ipython nil)
 ;; (add-to-list 'org-latex-minted-langs '(ipython "python"))

@@ -50,3 +50,13 @@
         (shell-command-to-string resize-command-str)))
   (zilongshanren//insert-org-or-md-img-link "" relativepath)
   (insert "\n"))
+
+
+(defun lyn/init-org-export-latex-style ()
+  (require 'ox-publish)
+  (setq org-latex-listings-options '(
+                                     ("breaklines" "true")
+                                     ("numbers" "left")
+                                     ("framexleftmargin" "0mm")
+                                     ))
+  )
