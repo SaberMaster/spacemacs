@@ -76,6 +76,9 @@ wing values are legal:
                  "~/org-notes/css/worg.css")
                 "\"/> \n")
         )
+      (add-to-list 'company-backends-python-mode 'ob-ipython-company-backend)
+      ;; (setq company-backends-python-mode 'ob-ipython-company-backend)
+      (setq org-export-with-sub-superscripts nil)
       (setq org-html-head lyn-website-html-blog-head)
       ;; set pdf export style
       (lyn/init-org-export-latex-style))))
@@ -104,6 +107,7 @@ wing values are legal:
   (use-package  scimax-org-babel-ipython
     :config
     (progn
+      ;; add auto indent
       (defun org-babel-src-block-put-property (property value)
         "Add a text property to the src-block"
         (save-excursion
@@ -112,6 +116,7 @@ wing values are legal:
           ;; auto indent
           (org-indent-line)))
 
+      ;; change result format
       (defun ob-ipython--async-callback (status &rest args)
         "Callback function for `ob-ipython--execute-request-asynchronously'.
 It replaces the output in the results."
@@ -179,6 +184,7 @@ It replaces the output in the results."
           ;; see if there is another thing in the queue.
           (org-babel-async-ipython-process-queue)))
 
+      ;; change result format
       (defun org-babel-execute:ipython (body params)
         "Execute a block of IPython code with Babel.
 This function is called by `org-babel-execute-src-block'."
@@ -297,6 +303,85 @@ This can provide information about the type, etc."
             (goto-char url-http-end-of-headers)
             (let ((json-array-type 'list))
               (json-read))))))
+
+    ;; (defun ob-ipython-complete ()
+    ;;   "Get completion candidates for the thing at point."
+    ;;   (if (ob-ipython-get-running)
+    ;;       (message "The kernel is busy running %s." (cdr (ob-ipython-get-running)))
+    ;;     (save-restriction
+    ;;       (if (org-in-src-block-p)
+    ;;           (progn
+    ;;             (when (org-in-src-block-p) (org-narrow-to-block))
+    ;;             (-if-let (result (->> (ob-ipython--complete-request
+    ;;                                    (buffer-substring-no-properties (point-min) (point-max))
+    ;;                                    (- (point) (point-min)))
+    ;;                                   car
+    ;;                                   (assoc 'content)))
+    ;;                 (list
+    ;;                  (cdr (assoc 'matches result))
+    ;;                  (cdr (assoc 'cursor_start result))
+    ;;                  (cdr (assoc 'cursor_end result))))
+    ;;             )
+    ;;         (progn
+    ;;           (-if-let (result (->> (ob-ipython--complete-request
+    ;;                                  (buffer-substring-no-properties (point-min) (point-max))
+    ;;                                  (- (point) (point-min)))
+    ;;                                 car
+    ;;                                 (assoc 'content)))
+    ;;               (list
+    ;;                (cdr (assoc 'matches result))
+    ;;                (cdr (assoc 'cursor_start result))
+    ;;                (cdr (assoc 'cursor_end result))))
+    ;;           )
+    ;;         )
+
+    ;;       (message "abc")
+    ;;       )))
+
+
+    (defvar ob-ipython-syntax-table
+      (make-syntax-table org-mode-syntax-table))
+
+    (modify-syntax-entry ?. "_." ob-ipython-syntax-table)
+    (modify-syntax-entry ?= ".=" ob-ipython-syntax-table)
+    (modify-syntax-entry ?' "|'" ob-ipython-syntax-table)
+
+    ;; This is a company backend to get completion while typing in org-mode.
+    (defun ob-ipython-company-backend (command &optional arg &rest ignored)
+      (interactive (list 'interactive))
+      (if (and
+           (not (ob-ipython-get-running))
+           (or
+            (and
+             (org-in-src-block-p)
+             (member (first (org-babel-get-src-block-info)) '("python" "ipython")))
+            ob-ipython-mode
+            ))
+          (cl-case command
+            (interactive (company-begin-backend 'ob-ipython-company-backend))
+            (prefix (with-syntax-table ob-ipython-syntax-table
+                      (when (looking-back "\\_<[a-zA-Z][a-zA-Z0-9._]*"
+                                          (line-beginning-position))
+                        (match-string 0))))
+            (candidates (car (ob-ipython-complete)))
+            ;; sorted => t if the list is already sorted
+            (sorted t)
+            ;; duplicates => t if there could be duplicates
+            (duplicates nil)
+            (require-match 'never))
+        nil))
+
+    ;; mode
+
+    (define-minor-mode ob-ipython-mode
+      ""
+      nil
+      " ipy"
+      '())
+
+    (defun org-babel-edit-prep:ipython (info)
+      ;; TODO: based on kernel, should change the mode
+      (ob-ipython-mode +1))
     ))
 
 

@@ -29,6 +29,8 @@
 ;; format org-download image save path for every org buffer
 (add-hook 'org-mode-hook #'lyn/org-download-dir)
 
+;; org download html width
+(setq org-download-image-html-width 500)
 
 ;; exec babel without confirm
 (defun my-org-confirm-babel-evaluate (lang body)
