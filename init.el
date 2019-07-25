@@ -42,10 +42,10 @@ This function should only modify configuration layer settings."
      prodigy
      ;; github
      search-engine
-     graphviz
+     ;; graphviz
      (haskell :variables haskell-enable-hindent t
               haskell-completion-backend 'intero)
-     plantuml
+     ;; plantuml
      ess
      (syntax-checking :variables syntax-checking-enable-by-default nil
                       syntax-checking-enable-tooltips nil)
@@ -74,6 +74,7 @@ This function should only modify configuration layer settings."
      ;; docker
      latex
      docker
+     dash
      ;; latex
      (colors :variables colors-enable-nyan-cat-progress-bar t)
      deft
@@ -89,7 +90,7 @@ This function should only modify configuration layer settings."
      yaml
      ;; ;; react layer
      ;; react
-     octave
+     ;; octave
      (python :variables
              python-test-runner '(nose pytest)
              python-backend 'lsp
@@ -101,8 +102,8 @@ This function should only modify configuration layer settings."
      ;;       ruby-version-manager 'chruby)
      ;; ;; ruby on rails layer
      ;; ruby-on-rails
-     ;; ;; lua layer
-     ;; lua
+     ;; lua layer
+     lua
      html
      (javascript :variables javascript-backend 'lsp)
      (typescript :variables
@@ -128,10 +129,10 @@ This function should only modify configuration layer settings."
             c-c++-backend 'lsp-ccls
             c-c++-lsp-executable (file-truename "/usr/local/bin/ccls"))
      zilongshanren
-     lyn
      (chinese :packages youdao-dictionary fcitx
               :variables chinese-enable-fcitx nil
               chinese-enable-youdao-dict t)
+     lyn
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
