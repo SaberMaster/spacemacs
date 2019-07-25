@@ -381,3 +381,15 @@ comment box."
    (if (eq 'mu4e-compose-mode (buffer-local-value 'major-mode (current-buffer)))
        (org~mu4e-mime-switch-headers-or-body)
      (mu4e-compose-mode)))
+(defun zilongshanren-refresh-imenu-index ()
+  (interactive)
+  (when (or (eq major-mode 'js2-mode)
+            (eq major-mode 'typescript-mode))
+    (progn
+      (setq imenu-create-index-function 'js2-imenu-make-index)
+
+      (when (eq major-mode 'typescript-mode)
+        (setq imenu-create-index-function 'lsp--imenu-create-index))
+
+      (setq-local company-backends (remove 'company-lsp company-backends))
+      (add-to-list 'company-backends '(company-lsp :with company-dabbrev-code :separate)))))
