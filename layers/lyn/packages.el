@@ -18,4 +18,5 @@
                                       lyn-programming
                                       lyn-org
                                       lyn-ui
+                                      lyn-misc
                                       ))

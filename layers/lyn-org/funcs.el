@@ -1,3 +1,4 @@
+
 ;;; funcs.el --- lyn-org layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
@@ -42,7 +43,7 @@
   (unless (file-directory-p image-save-path)
     (make-directory image-save-path 't))
   (setq final-image-full-path (concat image-save-path basename ".png"))
-  (setq relativepath (file-relative-name final-image-full-path (file-name-directory (buffer-file-name))))
+  (setq relativepath (concat "./" (file-relative-name final-image-full-path (file-name-directory (buffer-file-name)))))
   (call-process "screencapture" nil nil nil "-i" final-image-full-path)
   (if (executable-find "convert")
       (progn
