@@ -128,8 +128,7 @@ This function should only modify configuration layer settings."
             c-c++-backend 'lsp-ccls
             c-c++-lsp-executable (file-truename "/usr/local/bin/ccls"))
      zilongshanren
-     (chinese :packages youdao-dictionary fcitx
-              :variables chinese-enable-fcitx nil
+     (chinese :variables chinese-default-input-method 'pinyin
               chinese-enable-youdao-dict t)
      lyn
      )
