@@ -53,7 +53,7 @@
         popup
         ))
 
-(defun zilongshanren-misc/init-popup ()
+(defun zilongshanren-misc/post-init-popup ()
   (use-package popup
     :config
     (progn
