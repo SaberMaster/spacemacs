@@ -39,7 +39,7 @@
         git-messenger
         gist
         hydra
-        mwe-log-commands
+        ;; mwe-log-commands
         wrap-region
         ranger
         golden-ratio
