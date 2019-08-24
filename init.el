@@ -38,15 +38,14 @@ This function should only modify configuration layer settings."
      (plantuml :variables plantuml-jar-path "~/.spacemacs.d/plantuml.jar")
      (lsp :variables lsp-rust-server 'rust-analyzer)
      dap
-     colors
      prodigy
      epub
      (rust :variables rust-backend 'racer)
      github
      search-engine
      ;; graphviz
-     (haskell :variables haskell-enable-hindent t
-              haskell-completion-backend 'intero)
+     ;; (haskell :variables haskell-enable-hindent t
+     ;;          haskell-completion-backend 'intero)
      ;; plantuml
      ess
      (syntax-checking :variables syntax-checking-enable-by-default nil
@@ -73,11 +72,9 @@ This function should only modify configuration layer settings."
      (gtags :disabled-for clojure emacs-lisp javascript latex python shell-scripts)
      (shell :variables shell-default-shell 'ansi-term
             shell-default-term-shell "/bin/zsh")
-     ;; docker
      latex
      docker
      dash
-     ;; latex
      (colors :variables colors-enable-nyan-cat-progress-bar t)
      deft
      ;; php
@@ -97,7 +94,9 @@ This function should only modify configuration layer settings."
              python-test-runner '(nose pytest)
              python-backend 'lsp
              python-lsp-server 'mspyls
-             python-lsp-git-root "~/Github/python-language-server")
+             lsp-python-ms-executable "~/Documents/Code/dotnet/python-language-server/output/bin/Release/osx-x64/publish/Microsoft.Python.LanguageServer"
+             ;; python-lsp-git-root "~/Documents/Code/dotnet/python-language-server"
+             )
      ipython-notebook
      ;; ;; ruby layer
      ;; (ruby :variables ruby-enable-enh-ruby-mode t
@@ -111,7 +110,7 @@ This function should only modify configuration layer settings."
      (typescript :variables
                  typescript-fmt-on-save nil
                  typescript-fmt-tool 'typescript-formatter
-                typescript-backend 'lsp)
+                 typescript-backend 'lsp)
      emacs-lisp
      ;; programming-language
      ;; sml
@@ -689,6 +688,10 @@ dump."
 
   (setq exec-path (cons "/Users/lionqu/.nvm/versions/node/v10.16.0/bin/" exec-path))
   (setenv "PATH" (concat "/Users/lionqu/.nvm/versions/node/v10.16.0/bin:" (getenv "PATH")))
+  ;; add pyenv to exec-path
+  (setq exec-path (cons "/usr/local/opt/pyenv/shims/" exec-path))
+  (setq exec-path (cons "/usr/local/Cellar/pyenv-virtualenv/1.0.0/shims" exec-path))
+  (setq exec-path (cons "/usr/local/opt/pyenv/bin/" exec-path))
 
   ;;Report time every half hour
   ;; (defun announce-time ()

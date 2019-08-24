@@ -456,8 +456,8 @@ object (e.g., within a comment).  In these case, you need to use
 
       (org-babel-do-load-languages
        'org-babel-load-languages
-       '((R . t)
-         (sh . t)
+       '(
+         (R . t)
          (shell . t)
          (dot . t)
          (typescript . t)
