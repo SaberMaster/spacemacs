@@ -76,8 +76,8 @@ wing values are legal:
                  "~/org-notes/css/worg.css")
                 "\"/> \n")
         )
-      (add-to-list 'company-backends-python-mode 'ob-ipython-company-backend)
-      ;; (setq company-backends-python-mode 'ob-ipython-company-backend)
+      ;; (add-to-list 'company-backends-python-mode 'ob-ipython-company-backend)
+      (setq company-backends-python-mode 'ob-ipython-company-backend)
       (setq org-export-with-sub-superscripts nil)
       (setq org-html-head lyn-website-html-blog-head)
       ;; set pdf export style
