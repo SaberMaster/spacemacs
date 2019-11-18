@@ -126,10 +126,13 @@ This function should only modify configuration layer settings."
      ;; ;; mu4e emacs handle mail
      ;; (mu4e :variables
      ;;       mu4e-installation-path "/usr/local/Cellar/mu/0.9.16/share/emacs/site-lisp/mu/mu4e")
+     shell-scripts
      (c-c++ :variables
             c-c++-default-mode-for-headers 'c++-mode
-            c-c++-backend 'lsp-ccls
-            c-c++-lsp-executable (file-truename "/usr/local/bin/ccls"))
+            c-c++-backend 'lsp-cquery
+            c-c++-lsp-executable (file-truename "/usr/local/bin/ccls")
+            c-c++-lsp-sem-highlight-rainbow t
+            )
      zilongshanren
      (chinese :packages youdao-dictionary fcitx
               :variables chinese-enable-fcitx nil
