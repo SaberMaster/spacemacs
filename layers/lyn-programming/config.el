@@ -14,3 +14,4 @@
 (setenv "WORKON_HOME" "/usr/local/opt/pyenv/versions")
 ;; fix pyenv can't get right dir error
 (setenv "PYENV_ROOT" "/usr/local/opt/pyenv")
+(add-hook 'sh-mode-hook 'flycheck-mode)
