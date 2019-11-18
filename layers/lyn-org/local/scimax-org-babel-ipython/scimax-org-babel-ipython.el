@@ -110,11 +110,20 @@ name that is unique within the document. You might also like
 `org-id-uuid'."
   :group 'ob-ipython)
 
+(defcustom org-babel-ipython-inline-image-dir "ipython-inline-images"
+  "Directory to store ipython generated images."
+  :group 'ob-ipython)
+(make-variable-buffer-local 'org-babel-ipython-inline-image-dir)
+
 ;;; Code:
 
-(add-to-list 'org-structure-template-alist
-	     '("ip" "#+BEGIN_SRC ipython\n?\n#+END_SRC"
-	       "<src lang=\"python\">\n?\n</src>"))
+;; I decided to just remove these from scimax. I think they are all covered in
+;; yasnippet now.
+
+;; (if (version< (org-version) "9.2")
+;;     (add-to-list 'org-structure-template-alist
+;; 		 '("ip" "#+BEGIN_SRC ipython\n?\n#+END_SRC"
+;; 		   "<src lang=\"python\">\n?\n</src>")))
 
 
 (setq org-babel-default-header-args:ipython
@@ -200,7 +209,7 @@ With a prefix BELOW move point to lower block."
     (beginning-of-line)
     (insert (format "#+END_SRC
 
-#+BEGIN_SRC %s %s\n" language parameters))
+#+BEGIN_SRC %s %s\n" language (or parameters "")))
     (beginning-of-line)
     (when (not below)
       (org-babel-previous-src-block))))
@@ -237,7 +246,7 @@ With a prefix BELOW move point to lower block."
   "Write the B64-STRING to a file.
 Returns an org-link to the file."
   (let* ((f (md5 b64-string))
-	 (d "ipython-inline-images")
+	 (d org-babel-ipython-inline-image-dir)
 	 (tfile (concat d "/ob-ipython-" f ".png"))
 	 (link (format "[[file:%s]]" tfile)))
     (unless (file-directory-p d)
@@ -251,13 +260,12 @@ Returns an org-link to the file."
 Return RESULT-TYPE if specified. This comes from a header argument :ob-ipython-results"
   (cl-flet ((format-result (type value)
 			   (case type
+           ('text/org (concat value "\n"))
 			     ('text/plain (concat value "\n"))
 			     ('text/html (format
 					  "#+BEGIN_EXPORT HTML\n%s\n#+END_EXPORT\n"
 					  value))
-			     ('text/latex (format
-					   "#+BEGIN_EXPORT latex\n%s\n#+END_EXPORT\n"
-					   values))
+			     ('text/latex (concat value "\n"))
 			     ('image/png (concat (ob-ipython-inline-image value) "\n"))))
             (select-result-type (type result)
 				(if type
@@ -529,10 +537,10 @@ This can provide information about the type, etc."
   (save-restriction
     ;; Note you may be in a special edit buffer in which case it is not
     ;; necessary to narrow.
-    (when (org-in-src-block-p) (org-narrow-to-block))
+    (when (org-in-ipython-block-p) (org-narrow-to-block))
     (if (ob-ipython-get-running)
 	(message "The kernel is busy running %s. Try later." (cdr (ob-ipython-get-running)))
-      
+
       (-if-let (result (->> (ob-ipython--inspect buffer
 						 (- pos (point-min)))
 			    (assoc 'text/plain) cdr))
@@ -553,7 +561,7 @@ This can provide information about the type, etc."
   (save-restriction
     ;; Note you may be in a special edit buffer in which case it is not
     ;; necessary to narrow.
-    (when (org-in-src-block-p) (org-narrow-to-block))
+    (when (org-in-ipython-block-p) (org-narrow-to-block))
     (-if-let (result (->> (ob-ipython--inspect buffer
 					       (- pos (point-min)))
 			  (assoc 'text/plain)
@@ -598,7 +606,7 @@ This can provide information about the type, etc."
   (if (ob-ipython-get-running)
       (message "The kernel is busy running %s." (cdr (ob-ipython-get-running)))
     (save-restriction
-      (when (org-in-src-block-p) (org-narrow-to-block))
+      (when (org-in-ipython-block-p) (org-narrow-to-block))
       (-if-let (result (->> (ob-ipython--complete-request
 			     (buffer-substring-no-properties (point-min) (point-max))
 			     (- (point) (point-min)))
@@ -629,27 +637,31 @@ This can provide information about the type, etc."
 
 (define-key org-mode-map (kbd "s-.") #'ob-ipython-complete-ivy)
 
+(defvar ob-ipython-syntax-table
+  (make-syntax-table org-mode-syntax-table))
+
+(modify-syntax-entry ?. "_." ob-ipython-syntax-table)
+(modify-syntax-entry ?= ".=" ob-ipython-syntax-table)
+(modify-syntax-entry ?' "|'" ob-ipython-syntax-table)
 
 ;; This is a company backend to get completion while typing in org-mode.
 (defun ob-ipython-company-backend (command &optional arg &rest ignored)
   (interactive (list 'interactive))
-  (if (and
-       (not (ob-ipython-get-running))
-       (org-in-src-block-p)
-       (member (first (org-babel-get-src-block-info)) '("python" "ipython")))
-      (pcase command
-	(`interactive
-	 (company-begin-backend 'ob-ipython-company-backend))
-	(`prefix (save-excursion
-		   (let ((p (point)))
-		     (re-search-backward " \\|[[,({]\\|^")
-		     (s-trim (buffer-substring-no-properties p (+ 1 (point)))))))
-	(`candidates (first (ob-ipython-complete)))
-	;; sorted => t if the list is already sorted
-	(`sorted t)
-	;; duplicates => t if there could be duplicates
-	(`duplicates nil)
-	(`require-match 'never))
+  (if (and (not (ob-ipython-get-running))
+           (member (get-char-property (point) 'lang)
+                   '("ipython" "python")))
+      (cl-case command
+        (interactive (company-begin-backend 'ob-ipython-company-backend))
+        (prefix (with-syntax-table ob-ipython-syntax-table
+                  (when (looking-back "\\_<[a-zA-Z][a-zA-Z0-9._]*"
+                                      (line-beginning-position))
+                    (match-string 0))))
+        (candidates (car (ob-ipython-complete)))
+        ;; sorted => t if the list is already sorted
+        (sorted t)
+        ;; duplicates => t if there could be duplicates
+        (duplicates nil)
+        (require-match 'never))
     nil))
 
 
@@ -723,7 +735,7 @@ This can provide information about the type, etc."
     "comet" "connecticut" "crazy" "cup" "dakota" "december" "delaware"
     "delta" "diet" "don" "double" "early" "earth" "east" "echo"
     "edward" "eight" "eighteen" "eleven" "emma" "enemy" "equal"
-    "failed" "fanta" "fifteen" "fillet" "finch" "fish" "five" "fix"
+    "fanta" "fifteen" "fig" "fillet" "finch" "fish" "five" "fix"
     "floor" "florida" "football" "four" "fourteen" "foxtrot" "freddie"
     "friend" "fruit" "gee" "georgia" "glucose" "golf" "green" "grey"
     "hamper" "happy" "harry" "hawaii" "helium" "high" "hot" "hotel"
@@ -775,21 +787,22 @@ The name should be unique to the buffer."
 
 (defun org-babel-get-name-create ()
   "Get the name of a src block or add a name to the src block at point."
-  (if-let (name (fifth (org-babel-get-src-block-info)))
-      name
-    (save-excursion
-      (let ((el (org-element-context))
-	    (id (funcall org-babel-ipython-name-generator)))
-	(goto-char (org-element-property :begin el))
-	(insert (format "#+NAME: %s\n" id))
-	id))))
+  (let* ((elem (org-element-at-point))
+         (name (org-element-property :name elem)))
+    (or name
+        (let ((beg (org-element-property :begin elem))
+              (id (funcall org-babel-ipython-name-generator)))
+          (save-excursion
+            (goto-char beg)
+            (insert (format "#+NAME: %s\n" id)))
+          id))))
 
 
 (defun org-babel-get-session ()
   "Return current session.
 I wrote this because params returns none instead of nil. But in
 that case the process that ipython uses appears to be default."
-  (if-let (info (org-babel-get-src-block-info))
+  (if-let (info (org-babel-get-src-block-info 'light))
       (let* ((args (third info))
              (session (cdr (assoc :session args))))
         (if (and session
@@ -817,27 +830,15 @@ that case the process that ipython uses appears to be default."
 (org-link-set-parameters
  "async-running"
  :follow (lambda (path)
-	   (ob-ipython-kill-kernel
-	    (cdr
-	     (assoc
-	      (org-babel-get-session)
-	      (ob-ipython--get-kernel-processes))))
+	   (org-babel-goto-named-src-block path)
+	   (nuke-ipython)
 	   (save-excursion
 	     (org-babel-previous-src-block)
 	     (org-babel-remove-result))
-	   ;; clear the blocks in the queue.
-	   (loop for (buffer . name)
-		 in (ob-ipython-queue)
-		 do
-		 (save-window-excursion
-		   (with-current-buffer buffer
-		     (org-babel-goto-named-src-block name)
-		     (org-babel-remove-result))))
-
 	   (ob-ipython-set-running-cell nil)
 	   (setf (ob-ipython-queue) nil))
  :face '(:foreground "green4")
- :help-echo "Running")
+ :help-echo "Click to kill kernel")
 
 ;;** src block text properties
 
@@ -875,46 +876,48 @@ that case the process that ipython uses appears to be default."
 (defun org-babel-async-ipython-process-queue ()
   "Run the next job in the queue."
   (if-let ((not-running (not (ob-ipython-get-running)))
-	   (cell (ob-ipython-pop-queue))
-	   (buffer (car cell))
-	   (name (cdr cell)))
+           (cell (ob-ipython-pop-queue))
+           (buffer (car cell))
+           (name (cdr cell)))
       (save-window-excursion
-	(with-current-buffer buffer
-	  (org-babel-goto-named-src-block name)
-	  (ob-ipython-set-running-cell cell)
-	  (ob-ipython-log "Setting up %S to run." cell)
-	  (let* ((running-link (format
-				"[[async-running: %s %s]]"
-				(org-babel-src-block-get-property 'org-babel-ipython-name)
-				(org-babel-src-block-get-property 'org-babel-ipython-result-type)))
-		 (params (third (org-babel-get-src-block-info)))
-		 (session (org-babel-get-session))
-		 (body (org-babel-expand-body:generic
-			(s-join
-			 "\n"
-			 (append
-			  (org-babel-variable-assignments:python
-			   (third (org-babel-get-src-block-info)))
-			  (list
-			   (encode-coding-string
-			    (org-remove-indentation
-			     (org-element-property :value (org-element-context))) 'utf-8))))
-			params)))
-	    (ob-ipython--execute-request-asynchronously
-	     body session)
+        (with-current-buffer buffer
+          (org-babel-goto-named-src-block name)
+          (ob-ipython-set-running-cell cell)
+          (ob-ipython-log "Setting up %S to run." cell)
+          (let* ((running-link (format
+                                "[[async-running: %s]]"
+                                (org-babel-src-block-get-property 'org-babel-ipython-name)))
+                 (info (org-babel-get-src-block-info))
+                 (params (third info))
+                 (body
+                  (let ((coderef (nth 6 info))
+                        (expand
+                         (if (org-babel-noweb-p params :eval)
+                             (org-babel-expand-noweb-references info)
+                           (nth 1 info))))
+                    (if (not coderef) expand
+                      (replace-regexp-in-string
+                       (org-src-coderef-regexp coderef) "" expand nil nil 1))))
+                 (result-params (cdr (assoc :result-params params)))
+                 (session (--when-let (cdr (assoc :session params))
+                            (or (and (not (equal it "none")) it)
+                                "default")))
+                 (var-lines (org-babel-variable-assignments:python params))
+                 (body (encode-coding-string
+                        (org-babel-expand-body:generic
+                         (org-remove-indentation body) params var-lines)
+                        'utf-8)))
+            (ob-ipython--execute-request-asynchronously body session)
 
-	    (org-babel-remove-result)
-	    (org-babel-insert-result
-	     running-link
-	     (cdr (assoc :result-params (third (org-babel-get-src-block-info)))))
-	    (ob-ipython--normalize-session
-	     (cdr (assoc :session (third (org-babel-get-src-block-info)))))
-	    running-link)))
+            (org-babel-remove-result)
+            (org-babel-insert-result running-link result-params)
+            (ob-ipython--normalize-session session)
+            running-link)))
     (ob-ipython-log "Cannot process a queue.
     Running: %s
     Queue: %s"
-		    (ob-ipython-get-running)
-		    (ob-ipython-queue))
+                    (ob-ipython-get-running)
+                    (ob-ipython-queue))
     nil))
 
 
@@ -968,10 +971,13 @@ It replaces the output in the results."
                                          (cdr (ob-ipython-get-running)))
                                         (org-babel-remove-result)))
                                     json))))
+	 ;; If there are images, they will be in result
          (result (cdr (assoc :result ret)))
+	 ;; If there is printed output, it will be in output
          (output (cdr (assoc :output ret)))
-         params
+         info params result-params result-mime-type
          current-cell name
+	 (image-p nil)
          (result-type))
 
     (with-current-buffer (car args)
@@ -982,23 +988,46 @@ It replaces the output in the results."
         (setq result-type (org-babel-src-block-get-property 'org-babel-ipython-result-type))
         (org-babel-src-block-put-property 'org-babel-ipython-executed  t)
         (ob-ipython-log "Got a result-type of %s\n return from the kernel:  %S" result-type ret)
-        (setq params (third (org-babel-get-src-block-info)))
+        (setq info (org-babel-get-src-block-info))
+        (setq params (third info))
+        (setq result-params (cdr (assoc :result-params params)))
+        (setq result-mime-type (cdr (assoc :ob-ipython-results params)))
+	(when result-mime-type
+	  (setq result (-filter (lambda (e) (eq (car e) (intern result-mime-type))) result)))
         (org-babel-remove-result)
         (cond
          ((string= "output" result-type)
-          (let ((res (concat
-                      output
-                      (ob-ipython--format-result
-                       result (cdr (assoc :ob-ipython-results params))))))
-            (when (not (string= "" (s-trim res)))
-              (org-babel-insert-result
-               (s-trim res)
-               (cdr (assoc :result-params (third (org-babel-get-src-block-info))))))))
-         ((string= "value" result-type)
-          (org-babel-insert-result
-           (cdr (assoc 'text/plain result))
-           (cdr (assoc :result-params (third (org-babel-get-src-block-info)))))))
-        (org-redisplay-inline-images))
+	  (let ((res (mapconcat
+		      'identity
+		      (-remove
+		       'null
+		       (list
+			(when (not (s-blank? output))
+			  (format "#+BEGIN_EXAMPLE\n%s#+END_EXAMPLE\n" output))
+			(-when-let (vals (-filter (lambda (e) (eq (car e) 'text/org)) result))
+			  (mapconcat #'cdr vals "\n\n"))
+			(-when-let* ((vals (-filter (lambda (e) (eq (car e) 'text/plain)) result))
+				     (joined (mapconcat #'cdr vals "\n"))
+				     (not-plot-p (not (s-contains? "<matplotlib.figure.Figure" joined))))
+			  (format "#+BEGIN_EXAMPLE\n%s\n#+END_EXAMPLE\n" joined))
+			(-when-let (vals (-filter (lambda (e) (eq (car e) 'image/png)) result))
+			  (setq image-p t)
+			  (mapconcat (lambda (e) (ob-ipython-inline-image (cdr e))) vals "\n"))
+			(-when-let (vals (-filter (lambda (e) (eq (car e) 'text/latex)) result))
+			  (format "#+BEGIN_LATEX\n%s\n#+END_LATEX\n" (mapconcat #'cdr vals "\n")))
+			(-when-let (vals (-filter (lambda (e) (eq (car e) 'text/html)) result))
+			  (mapconcat #'cdr vals "\n"))))
+		      "\n")))
+	    (org-babel-insert-result res result-params)
+	    (when image-p (org-redisplay-inline-images))))
+	 ((string= "value" result-type)
+	  (let ((res (ob-ipython--format-result
+		      result result-mime-type)))
+	    (when (not (s-blank-str? res))
+	      (org-babel-insert-result (s-chomp (s-chop-prefix "\n" res)) result-params info))
+	    ;; If result contains image, redisplay the images
+	    (when (s-contains? "[[file:" res)
+	      (org-redisplay-inline-images))))))
       (ob-ipython-set-running-cell nil)
       (setq header-line-format (format "The kernel is %s" (ob-ipython-get-kernel-name))))
 
@@ -1011,36 +1040,35 @@ It replaces the output in the results."
 (defun org-babel-execute-async:ipython ()
   "Execute the block at point asynchronously."
   (interactive)
-  (when (and (org-in-src-block-p)
-	     (string= "ipython" (first (org-babel-get-src-block-info))))
+  (when (org-in-ipython-block-p)
     (let* ((name (org-babel-get-name-create))
-	   (params (third (org-babel-get-src-block-info)))
-	   (session (cdr (assoc :session params)))
-	   (results (cdr (assoc :results params)))
-	   (result-type (cdr (assoc :result-type params)))
-	   (queue-link (format "[[async-queued: %s %s]]"
-			       (org-babel-get-name-create) result-type)))
+           (params (third (org-babel-get-src-block-info)))
+           (session (cdr (assoc :session params)))
+           (results (cdr (assoc :results params)))
+           (result-type (cdr (assoc :result-type params)))
+           (queue-link (format "[[async-queued: %s %s]]"
+                               (org-babel-get-name-create) result-type)))
       (org-babel-ipython-initiate-session session params)
 
       ;; Check the current results for inline images and delete the files.
       (let ((location (org-babel-where-is-src-block-result))
-	    current-results)
-	(when location
-	  (save-excursion
-	    (goto-char location)
-	    (when (looking-at (concat org-babel-result-regexp ".*$"))
-	      (setq current-results (buffer-substring-no-properties
-				     location
-				     (save-excursion
-				       (forward-line 1) (org-babel-result-end)))))))
-	(with-temp-buffer
-	  (insert (or current-results ""))
-	  (goto-char (point-min))
-	  (while (re-search-forward
-		  "\\[\\[file:\\(ipython-inline-images/ob-ipython-.*?\\)\\]\\]" nil t)
-	    (let ((f (match-string 1)))
-	      (when (file-exists-p f)
-		(delete-file f))))))
+            current-results)
+        (when location
+          (save-excursion
+            (goto-char location)
+            (when (looking-at (concat org-babel-result-regexp ".*$"))
+              (setq current-results (buffer-substring-no-properties
+                                     location
+                                     (save-excursion
+                                       (forward-line 1) (org-babel-result-end)))))))
+        (with-temp-buffer
+          (insert (or current-results ""))
+          (goto-char (point-min))
+          (while (re-search-forward
+                  "\\[\\[file:\\(ipython-inline-images/ob-ipython-.*?\\)\\]\\]" nil t)
+            (let ((f (match-string 1)))
+              (when (file-exists-p f)
+                (delete-file f))))))
 
       ;; Now we run the async. First remove the old results and insert a link.
       (org-babel-remove-result)
@@ -1052,15 +1080,15 @@ It replaces the output in the results."
 
       (org-babel-insert-result
        queue-link
-       (cdr (assoc :result-params (third (org-babel-get-src-block-info)))))
+       (cdr (assoc :result-params params)))
 
       (ob-ipython-queue-cell (cons (current-buffer) name))
       (ob-ipython-log "Added %s to the queue.
     The current running cell is %s.
     The queue contains %S."
-		      name
-		      (ob-ipython-get-running)
-		      (ob-ipython-queue))
+                      name
+                      (ob-ipython-get-running)
+                      (ob-ipython-queue))
       ;; It appears that the result of this function is put into the results at this point.
       (or
        (org-babel-async-ipython-process-queue)
@@ -1087,12 +1115,23 @@ It replaces the output in the results."
 	    (kill-buffer buf)))))
 
 
+(defun org-in-ipython-block-p (&optional inside)
+  "Whether point is in a code source block.
+When INSIDE is non-nil, don't consider we are within a src block
+when point is at #+BEGIN_SRC or #+END_SRC."
+  (let ((case-fold-search t))
+    (or (and (equal (get-char-property (point) 'lang) "ipython"))
+        (and (not inside)
+             (save-excursion
+               (beginning-of-line)
+               (looking-at-p ".*#\\+\\(begin\\|end\\)_src ipython"))))))
+
+
 (defun scimax-execute-ipython-block ()
   "Execute the block at point.
 If the variable `org-babel-async-ipython' is non-nil, execute it asynchronously.
 This function is used in a C-c C-c hook to make it work like other org src blocks."
-  (when (and (org-in-src-block-p)
-	     (string= "ipython" (first (org-babel-get-src-block-info))))
+  (when (org-in-ipython-block-p)
 
     (when ob-ipython-buffer-unique-kernel
       ;; Use buffer local variables for this.
@@ -1132,46 +1171,81 @@ This function is used in a C-c C-c hook to make it work like other org src block
   "Execute all the ipython blocks in the buffer up to point."
   (interactive)
   (let ((s (org-babel-get-session))
-        (p (point)))
+        (l (- (point-max) (point))))
     (save-excursion
       (goto-char (point-min))
       (while (and (org-babel-next-src-block)
-                  (<= (point) p))
-        (and (string= (first (org-babel-get-src-block-info)) "ipython")
-             (string= (org-babel-get-session) s)
-             (if org-babel-async-ipython
-                 (org-babel-execute-async:ipython)
-               (org-babel-execute-src-block)))))))
+                  (<= (point) (- (point-max) l)))
+        (when (and (string= (first (org-babel-get-src-block-info)) "ipython")
+                   (string= (org-babel-get-session) s))
+          (if org-babel-async-ipython
+              (progn
+                ;; wait until last cell is finished
+                (while (ob-ipython-get-running)
+                  (sleep-for 0.05))
+                (org-babel-execute-async:ipython))
+            (org-babel-execute-src-block)))))))
 
 
 (defun org-babel-execute-ipython-buffer-async ()
-  "Execute all the ipython blocks in the buffer asynchronously."
+  "Execute source code blocks in a buffer.
+Call `org-babel-execute-async:ipython' on every ipython source
+block in the current buffer."
   (interactive)
-  (org-block-map
-   (lambda ()
-     (when (string= (first (org-babel-get-src-block-info)) "ipython")
-       (org-babel-execute-async:ipython)))
-   (point-min)
-   (point-max)))
+  (org-save-outline-visibility t
+    (org-babel-map-executables nil
+      (when (org-in-ipython-block-p)
+        (while (ob-ipython-get-running)
+          (sleep-for 0.05))
+        (org-babel-execute-async:ipython)))))
+
+
+(defun org-babel-execute-ipython-subtree-async ()
+  "Execute source code blocks in a subtree.
+Call `org-babel-execute-async:ipython' on every ipython source
+block in the current subtree."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (org-narrow-to-subtree)
+      (org-babel-execute-ipython-buffer-async)
+      (widen))))
 
 
 (defun nuke-ipython ()
-  "Kill everything."
+  "Kill all the ipython associated buffers and processes.
+This is normally used to restart everything. Note it may kill all
+kernels. It seems necessary to kill everything so that the kernel
+in the current document can be restarted. This sometimes takes
+longer than I would expect to work."
   (interactive)
-  (loop for buf in (buffer-list)
+  (loop for bufname in (list "*org-babel-ipython-debug*"
+			     (format "*ob-ipython-kernel-%s*"
+				     (if-let (bf (buffer-file-name))
+					 (md5 (expand-file-name bf))
+				       "scratch")))
 	do
-	(when (or (s-starts-with? "*ob-ipython" (buffer-name buf))
-		  (s-starts-with? "*org-babel-ipython-debug*" (buffer-name buf))
-		  (s-starts-with? "*Python" (buffer-name buf)))
-	  (message "killing %s" buf)
-	  (kill-buffer buf)))
-  (loop for proc in `("localhost"
-		      "client-driver"
-		      ,(format "kernel-%s" (org-babel-get-session)))
+	(when-let (buf (get-buffer bufname)) (kill-buffer buf)))
+  (loop for proc in (list (format "kernel-%s" (if-let (bf (buffer-file-name))
+						  (md5 (expand-file-name bf))
+						"scratch")))
 	do
 	(when (get-process proc)
 	  (ob-ipython-log "Killing proc: %s" proc)
 	  (delete-process proc)))
+  ;; this is a little more aggressive at clearing out buffers and processes
+  (loop for bufname in (list "*ob-ipython-client-driver*"
+			     "*Python*")
+	do
+	(when-let (buf (get-buffer bufname)) (kill-buffer buf)))
+
+  (loop for proc in '("localhost"
+		      "client-driver")
+	do
+	(when (get-process proc)
+	  (ob-ipython-log "Killing proc: %s" proc)
+	  (delete-process proc)))
+
   (org-babel-async-ipython-clear-queue)
   (setq header-line-format nil))
 
@@ -1185,9 +1259,29 @@ This function is used in a C-c C-c hook to make it work like other org src block
   (org-mode)
   (insert "[[elisp:nuke-ipython]]\n\n")
   (insert "[[elisp:org-babel-async-ipython-clear-queue]]\n\n")
+  (insert (format "\n* Variables
+
+- scimax-ipython-command :: %s
+- ob-ipython-buffer-unique-kernel :: %s
+- org-babel-ipython-debug :: %s
+- ob-ipython-number-on-exception :: %s
+- org-babel-async-ipython :: %s
+- ob-ipython-exception-results :: %s
+- org-babel-ipython-completion :: %s
+
+* Kernel
+"
+		  scimax-ipython-command
+		  ob-ipython-buffer-unique-kernel
+		  org-babel-ipython-debug
+		  ob-ipython-number-on-exception
+		  org-babel-async-ipython
+		  ob-ipython-exception-results
+		  org-babel-ipython-completion))
   (insert (format "Running in this buffer: %s\n" (ob-ipython-get-running)))
   (insert (format "Queue in this buffer: %S\n\n" (ob-ipython-queue)))
-  (insert "Overall running:\n")
+  (insert "Overall running in all kernels:
+  kernel: cell running\n")
   (ht-map (lambda (key value)
 	    (insert (format "  %s: %s\n" key value)))
 	  *org-babel-async-ipython-running-cell*)
