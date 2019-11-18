@@ -12,6 +12,8 @@
  '(company-show-numbers t)
  '(company-statistics-auto-restore nil)
  '(ctags-update-delay-seconds 1024)
+ '(docker-container-default-sort-key (quote ("Created")))
+ '(docker-container-shell-file-name "/bin/sh")
  '(erc-nick "zilongshanren")
  '(erc-port 6666)
  '(evil-want-C-i-jump t)
