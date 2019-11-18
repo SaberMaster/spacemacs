@@ -35,7 +35,8 @@ This function should only modify configuration layer settings."
      better-defaults
      ranger
      emoji
-     (plantuml :variables plantuml-jar-path "~/.spacemacs.d/plantuml.jar")
+     (plantuml :variables plantuml-jar-path "~/.spacemacs.d/plantuml.jar"
+               plantuml-default-exec-mode 'jar)
      (lsp :variables lsp-rust-server 'rust-analyzer)
      dap
      prodigy
