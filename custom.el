@@ -5,13 +5,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ahs-case-fold-search nil)
+ '(ahs-case-fold-search nil t)
  '(command-log-mode-window-size 50)
  '(company-dabbrev-minimum-length 3)
  '(company-dabbrev-other-buffers nil)
  '(company-show-numbers t)
  '(company-statistics-auto-restore nil)
  '(ctags-update-delay-seconds 1024)
+ '(docker-container-default-sort-key (quote ("Created")))
+ '(docker-container-shell-file-name "/bin/sh")
  '(erc-nick "zilongshanren")
  '(erc-port 6666)
  '(evil-want-C-i-jump t)
