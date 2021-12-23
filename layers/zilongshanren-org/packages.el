@@ -14,14 +14,16 @@
 
 (defconst zilongshanren-org-packages
   '(
-    (org :location built-in)
+    (org :location local)
+    ;; (org-plus-contrib :localtion local)
+    ;; (org :location built-in)
     ;; org-mac-link
     org-pomodoro
     deft
     sound-wav
     ob-typescript
     evil-org
-    org-superstar
+    ;; org-superstar
     org-super-agenda
     cal-china-x
     org-re-reveal
@@ -65,11 +67,11 @@
     (add-hook 'org-mode-hook 'org-super-agenda-mode))
   )
 
-(defun zilongshanren-org/post-init-org-superstar ()
-  (progn
-    (setq org-superstar-headline-bullets-list '("☰" "☷" "☯" "☭"))
-    (setq org-ellipsis " ▼ ")
-    ))
+;; (defun zilongshanren-org/post-init-org-superstar ()
+;;   (progn
+;;     (setq org-superstar-headline-bullets-list '("☰" "☷" "☯" "☭"))
+;;     (setq org-ellipsis " ▼ ")
+;;     ))
 
 (defun zilongshanren-org/post-init-evil-org ()
   (defun evil-org--populate-navigation-bindings ()
