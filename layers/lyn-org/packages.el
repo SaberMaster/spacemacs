@@ -32,9 +32,8 @@
 
 (defconst lyn-org-packages
   '(
-    (org :location built-in)
+    (org :location local)
     ;; https://github.com/jkitchin/scimax/blob/master/scimax-org-babel-ipython.el use this for local 
-    ;; 
     (scimax-org-babel-ipython :location local)
     org-edit-latex
     org-download)
